@@ -6,6 +6,38 @@ const Button = ({ handleClick, text }) => (
   </button>
 )
 
+const Statistics = (props) => {
+  const total = props.good + props.neutral + props.bad
+  const average = (props.good - props.bad) / 
+                  (props.good + props.neutral + props.bad)
+  const positive =  props.good / 
+                    (props.good + props.neutral + props.bad) * 100 
+  
+  if ( props.good == 0 || props.bad == 0 ) {
+    return (
+      <div>
+        <p>good {props.good}</p>
+        <p>neutral {props.neutral}</p>
+        <p>bad {props.bad}</p>
+        <p>all {total}</p>
+        <p>average 0</p>
+        <p>positive 0 %</p>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <p>good {props.good}</p>
+      <p>neutral {props.neutral}</p>
+      <p>bad {props.bad}</p>
+      <p>all {total}</p>
+      <p>average {average}</p>
+      <p>positive {positive} %</p>
+    </div>
+  )
+}
+
 const App = () => {
   // tallenna napit omaan tilaansa
   // const [good, setGood] = useState(0)
@@ -93,12 +125,10 @@ const App = () => {
       <Button handleClick={handleBadClick} text="bad" />
       <h1>statistics</h1>
       <div>
-        <p>good {clicks.good}</p>
-        <p>neutral {clicks.neutral}</p>
-        <p>bad {clicks.bad}</p>
-        <Total />
-        <Average />
-        <Positive />
+        <Statistics good={clicks.good} 
+                    neutral={clicks.neutral} 
+                    bad={clicks.bad}
+        />
       </div>
     </div>
   )
