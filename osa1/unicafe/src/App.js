@@ -9,17 +9,22 @@ const Button = ({ handleClick, text }) => (
 const StatisticLine = ( { text, value }) => {
   if ( text == "positive" ) {
     return (
-      <p>{text} {value} %</p>
+      <tr>
+        <td>{text}</td>
+        <td>{value} %</td>
+      </tr>
     )
   } else {
     return (
-      <p>{text} {value}</p>
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
     )
   }
 }
 
 const Statistics = ({clicks}) => {
-
   const total = clicks.good + clicks.neutral + clicks.bad
   const average = (clicks.good - clicks.bad) / 
                   (clicks.good + clicks.neutral + clicks.bad)
@@ -32,31 +37,22 @@ const Statistics = ({clicks}) => {
         <p>No feedback given</p>
       </div>
     )
-  }
-
-  if ( clicks.good == 0 || clicks.bad == 0 ) {
+  } else {
     return (
       <div>
-        <p>good {clicks.good}</p>
-        <p>neutral {clicks.neutral}</p>
-        <p>bad {clicks.bad}</p>
-        <p>all {total}</p>
-        <p>average 0</p>
-        <p>positive 0 %</p>
+        <table>
+          <tbody>
+            <StatisticLine text="good" value={clicks.good} />
+            <StatisticLine text="neutral" value= {clicks.neutral} />
+            <StatisticLine text="bad" value={clicks.bad} />
+            <StatisticLine text="all" value={total} />
+            <StatisticLine text="average" value={average} />
+            <StatisticLine text="positive" value={positive} />
+          </tbody>
+        </table>
       </div>
-    )
-  }
-
-  return (
-    <div>
-      <StatisticLine text="good" value={clicks.good} />
-      <StatisticLine text="neutral" value= {clicks.neutral} />
-      <StatisticLine text="bad" value={clicks.bad} />
-      <StatisticLine text="all" value={total} />
-      <StatisticLine text="average" value={average} />
-      <StatisticLine text="positive" value={positive} />
-    </div>
   )
+  }
 }
 
 const App = () => {
@@ -101,9 +97,7 @@ const App = () => {
       <Button handleClick={handleNeutralClick} text="neutral" />
       <Button handleClick={handleBadClick} text="bad" />
       <h1>statistics</h1>
-      <div>
-        <Statistics clicks={clicks} />
-      </div>
+      <Statistics clicks={clicks} />
     </div>
   )
 }
