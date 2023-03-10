@@ -1,31 +1,5 @@
 import Course from './components/Course'
 
-const Header = (props) => {
-  return (
-    <div>
-      <h1>{props.course}</h1>
-    </div>
-  )
-}
-
-const Part = (props) => {
-  return (
-    <div>
-      <p>{props.part} {props.exercises}</p>
-    </div>
-  )
-}
-
-const Content = (props) => {
-  return (
-    <div>
-      <Part part={props.parts.at(0).name + " " + props.parts.at(0).exercises}/>
-      <Part part={props.parts.at(1).name + " " + props.parts.at(1).exercises}/>
-      <Part part={props.parts.at(2).name + " " + props.parts.at(2).exercises}/>
-    </div>
-  )
-}
-
 const App = () => {
   const course = {
     name: 'Half Stack application development',

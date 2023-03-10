@@ -1,14 +1,13 @@
 import Header from './Header'
-import Part from './Part'
 import Content from './Content'
+import Total from './Total'
 
-const Course = ({ course }) => {
-    // console.log(props)
-    
+const Course = ({ course }) => {   
     return (
         <div>
             <Header header={course.name} />
             <Content content={course} />
+            <Total exercises={course} />
         </div>
     )
 }

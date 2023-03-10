@@ -1,5 +1,4 @@
 const Part = ({ parts }) => {
-    console.log(parts)
     return (
         <div>
             {parts.map(part => 
