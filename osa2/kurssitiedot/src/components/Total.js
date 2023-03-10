@@ -1,13 +1,18 @@
 const Total = ({ exercises }) => {
     const parts = exercises.parts
     
-    let number_of_exercises = 0
+    const exerciseArray = parts.map(part => part.exercises)
  
-    parts.map(part => number_of_exercises += part.exercises)
-    
+    const initialValue = 0
+    const total = exerciseArray.reduce(
+        (accumulator, currentValue) =>
+        accumulator + currentValue,
+        initialValue
+    )                  
+
     return (
         <p>
-            <b>total of {number_of_exercises} exercises</b>
+            <b>total of {total} exercises</b>
         </p>
     )
 }
