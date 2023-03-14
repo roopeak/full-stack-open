@@ -1,6 +1,6 @@
 const Person = ({ name }) => {
     return (
-        <div>{name.name}</div>
+        <div>{name.name} {name.number}</div>
     )
 }
 
