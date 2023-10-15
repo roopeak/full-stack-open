@@ -21,7 +21,7 @@ const Statistics = (props) => {
   const average = (props.good - props.bad) / all
   const positive = props.good / all * 100 + ' %'
 
-  if (props.good > 0 || props.bad > 0 | props.neutral > 0)
+  if (all > 0)
   {
     return (
       <table>
