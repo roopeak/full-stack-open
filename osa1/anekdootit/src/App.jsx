@@ -1,6 +1,5 @@
 import { useState } from 'react'
 
-
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -12,18 +11,43 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-  
+
   const [points, setPoints] = useState(new Uint8Array(8))
   const [selected, setSelected] = useState(0)
 
   const addVote = () => {
+    Most()
     const copy = [...points]
     copy[selected] += 1
     setPoints(copy)
   }
 
+  const Most = () => {
+    let max = points[0]
+    let maxIndex = 0
+
+    for (let i = 1; i < 8; i++)
+    {
+      if (points[i] > max)
+      {
+        maxIndex = i
+        max = points[i]
+      }
+    }
+
+    return (
+      <div>
+        <div>{anecdotes[maxIndex]}</div>
+        <div>has {points[maxIndex]} votes</div>
+      </div>
+    )
+  }
+
   return (
     <div>
+      <div>
+        <h1>Anecdote of the day</h1>
+      </div>
       <div>
         {anecdotes[selected]}
       </div>
@@ -33,6 +57,10 @@ const App = () => {
       <div>
         <button onClick={addVote}>vote</button>
         <button onClick={() => setSelected(Math.floor(Math.random() * 8))}>next anecdote</button>
+      </div>
+      <div>
+        <h1>Anecdote with most votes</h1>
+        <Most points={points} anecdotes={anecdotes} />
       </div>
     </div>
   )
