@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -11,8 +12,15 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when dianosing patients.',
     'The only way to go fast, is to go well.'
   ]
-   
+  
+  const [points, setPoints] = useState(new Uint8Array(8))
   const [selected, setSelected] = useState(0)
+
+  const addVote = () => {
+    const copy = [...points]
+    copy[selected] += 1
+    setPoints(copy)
+  }
 
   return (
     <div>
@@ -20,10 +28,13 @@ const App = () => {
         {anecdotes[selected]}
       </div>
       <div>
+        has {points[selected]} votes
+      </div>
+      <div>
+        <button onClick={addVote}>vote</button>
         <button onClick={() => setSelected(Math.floor(Math.random() * 8))}>next anecdote</button>
       </div>
     </div>
-    
   )
 }
 
