@@ -21,7 +21,6 @@ const Content = ({ parts }) => {
 }
 
 const Course = ({ course }) => {
-
     const courseName = course.name
     const parts = course.parts
 
