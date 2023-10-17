@@ -1,7 +1,6 @@
 const Persons = (props) => {
-
     const persons = props.persons
-
+    
     return (
         <div>
             {persons.map(person =>
