@@ -4,9 +4,8 @@ const baseUrl = 'http://localhost:3001/persons'
 
 const getAll = () => {
     const request = axios.get(baseUrl)
-    return request.then(response => {
-        response.data
-    })
+    return request.then(response => response.data)
+    
 }
 
 const create = newObject => {
@@ -20,7 +19,5 @@ const update = (id, newObject) => {
 }
 
 export default {
-    getAll: getAll,
-    create: create,
-    update: update
+    getAll, create, update
 }

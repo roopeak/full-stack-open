@@ -12,6 +12,7 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
 
 
+
   useEffect(() => {
     personService
       .getAll()
@@ -19,18 +20,6 @@ const App = () => {
         setPersons(initialPersons)
       })
   }, [])
-
-  const hook = () => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
-      })
-  }
-
-  useEffect(hook, [])
 
   const addName = (event) => {
     event.preventDefault()
@@ -74,6 +63,26 @@ const App = () => {
     
   }
 
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) 
+    {
+      const url = `http://localhost:3001/persons/${id}`
+      const person = persons.find(n => n.id === id)
+    
+      axios
+        .delete(`http://localhost:3001/persons/${id}`)
+        .then(response => {
+          console.log('deleted')
+        })
+        .catch(error => {
+          console.error(error)
+        })
+
+      const changedPersons = persons.filter((person) => person.id !== id)
+      setPersons(changedPersons)
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -86,7 +95,7 @@ const App = () => {
         addName={addName} 
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} />
+      <Persons persons={persons} deletePerson={deletePerson} />
     </div>
   )
 }
