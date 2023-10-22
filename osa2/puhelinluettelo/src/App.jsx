@@ -4,6 +4,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Notification from './components/Notification'
+import Error from './components/Error'
 import personService from './services/persons'
 
 
@@ -13,6 +14,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [notificationMessage, setNotificationMessage] = useState()
+  const [errorMessage, setErrorMessage] = useState()
 
   useEffect(() => {
     personService
@@ -65,6 +67,7 @@ const App = () => {
         .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
+        setNewNumber('')
         })
 
       setNotificationMessage(
@@ -102,10 +105,21 @@ const App = () => {
       axios
         .delete(`http://localhost:3001/persons/${id}`)
         .then(response => {
-          console.log('deleted')
+          setNotificationMessage(
+            `Information of ${name} has been removed from server`
+          )
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
         .catch(error => {
           console.error(error)
+          setErrorMessage(
+            `Information of ${name} has already been removed from server`
+          )
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
 
       const changedPersons = persons.filter((person) => person.id !== id)
@@ -117,6 +131,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
       <Filter newFilter={newFilter} addFilter={addFilter} />
       <h2>add a new</h2>
       <PersonForm 
