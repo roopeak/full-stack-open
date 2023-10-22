@@ -3,13 +3,16 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 import personService from './services/persons'
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState()
 
   useEffect(() => {
     personService
@@ -26,7 +29,7 @@ const App = () => {
       number: newNumber,
     }
 
-    let found
+    let found = null
     persons.find((element) => {
       if (element.name === newName)
       {
@@ -34,22 +37,25 @@ const App = () => {
       }
     })
 
-    if (found.name === newName)
+    if (found !== null)
     {
-      if (window.confirm(`${found.name} is already added to phonebook, replace the old number with a new one?`))
+      if (found.name === newName)
       {
-        console.log(`${found.id} needs to be changed`)
-        axios
-          .put(`http://localhost:3001/persons/${found.id}`, {
-            name: newName,
-            number: newNumber,
-          })
-          .then(response => {
-            response.data
-            window.location.reload()
-          })
-          
-          setNewNumber('')
+        if (window.confirm(`${found.name} is already added to phonebook, replace the old number with a new one?`))
+        {
+          console.log(`${found.id} needs to be changed`)
+          axios
+            .put(`http://localhost:3001/persons/${found.id}`, {
+              name: newName,
+              number: newNumber,
+            })
+            .then(response => {
+              response.data
+              window.location.reload()
+            })
+            
+            setNewNumber('')
+        }
       }
     }
     else
@@ -60,6 +66,14 @@ const App = () => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         })
+
+      setNotificationMessage(
+        `Added ${nameObject.name}`
+      )
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
+      
     }
   }
 
@@ -77,8 +91,6 @@ const App = () => {
       persons.filter((person) => 
       person.name.toLowerCase().includes(event.target.value))
     )
-
-    
   }
 
   const deletePerson = (id, name) => {
@@ -104,6 +116,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter newFilter={newFilter} addFilter={addFilter} />
       <h2>add a new</h2>
       <PersonForm 
