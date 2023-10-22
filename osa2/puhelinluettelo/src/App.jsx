@@ -11,8 +11,6 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
 
-
-
   useEffect(() => {
     personService
       .getAll()
@@ -28,11 +26,31 @@ const App = () => {
       number: newNumber,
     }
 
-    const found = persons.find((element) => element = nameObject)
+    let found
+    persons.find((element) => {
+      if (element.name === newName)
+      {
+        found = element;
+      }
+    })
 
-    if (found.name === nameObject.name)
+    if (found.name === newName)
     {
-      alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${found.name} is already added to phonebook, replace the old number with a new one?`))
+      {
+        console.log(`${found.id} needs to be changed`)
+        axios
+          .put(`http://localhost:3001/persons/${found.id}`, {
+            name: newName,
+            number: newNumber,
+          })
+          .then(response => {
+            response.data
+            window.location.reload()
+          })
+          
+          setNewNumber('')
+      }
     }
     else
     {
@@ -87,6 +105,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter newFilter={newFilter} addFilter={addFilter} />
+      <h2>add a new</h2>
       <PersonForm 
         newName={newName} 
         newNumber={newNumber} 
