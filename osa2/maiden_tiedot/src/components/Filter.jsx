@@ -1,3 +1,5 @@
+import Weather from './Weather'
+
 const Filter = ({ value, data }) => {
     // console.log('This is value: ', value)
     // console.log(`This is data: ${data}`)
@@ -42,6 +44,7 @@ const Filter = ({ value, data }) => {
                     ))}
                 </ul>
                 <img src={country.flags.png} />
+                <Weather capital={country.capital} />
                 
             </div>
         )
