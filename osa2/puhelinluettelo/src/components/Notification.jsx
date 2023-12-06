@@ -1,24 +1,24 @@
-const Notification = ({ message }) => {
-    if (message === null || message === undefined) {
-
-        return null
+const Notification = ({ info }) => {
+    if (!info.message) {
+      return
     }
-    
-    const notificationStyle = {
-        color: "green",
-        background: "lightgrey",
-        borderStyle: "solid",
-        borderRadius: "5px",
-        padding: "10px",
-        marginBottom: "10px",
-        fontSize: "20px"
+  
+    const style = {
+      color: info.type==='error' ? 'red' : 'green',
+      background: 'lightgrey',
+      fontSize: 20,
+      borderStyle: 'solid',
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10
     }
-
+  
     return (
-        <div style={notificationStyle}>
-            {message}
-        </div>
+      <div style={style}>
+        {info.message}
+      </div>
     )
-}
-
-export default Notification
+  }
+  
+  export default Notification
+  

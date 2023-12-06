@@ -1,16 +1,11 @@
-const Filter = (props) => {
-    const newFilter = props.newFilter
-    const addFilter = props.addFilter
-    
+const Filter = ({ filter, setFilter}) => {
     return (
-        <div>
-            filter shown with
-            <input
-            value={newFilter}
-            onChange={addFilter}
-            />
-        </div>
+      <div>
+        filter shown with
+        <input value={filter} onChange={({ target }) => setFilter(target.value)} />
+      </div>
     )
-}
-
-export default Filter
+  }
+  
+  
+  export default Filter
