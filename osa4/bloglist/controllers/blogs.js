@@ -4,15 +4,9 @@ const Blog = require('../models/Blog')
 blogsRouter.get('/', async (request, response) => {
     const allBlogs = await Blog.find({})
     response.json(allBlogs)
-
-    // Blog
-    //   .find({})
-    //   .then(blogs => {
-    //     response.json(blogs)
-    // })
 })
   
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', async (request, response, next) => {
     const { title, author, url, likes } = request.body;
 
     if (!title || !url) 
@@ -26,18 +20,29 @@ blogsRouter.post('/', async (request, response) => {
       url,
       likes: likes !== undefined ? likes : 0,
     });
-  
-    const savedBlog = await newBlog.save();
-  
-    response.status(201).json(savedBlog);
 
-    // const blog = new Blog(request.body)
+    try {
+        const savedBlog = await newBlog.save();
+        response.status(201).json(savedBlog);
+    } catch(exception) {
+        next(exception)
+    }
+})
 
-    // blog
-    //     .save()
-    //     .then(result => {
-    //     response.status(201).json(result)
-    // })
+blogsRouter.delete('/:id', async (request, response) => {
+    const blogId = request.params.id
+
+    const blog = await Blog.findById(blogId)
+
+    if (blog)
+    {
+        await Blog.findByIdAndDelete(request.params.id)
+        response.status(204).end()
+    }
+    else
+    {
+        response.status(404).json({ error: 'Blog not found' })
+    }
 })
   
 module.exports = blogsRouter

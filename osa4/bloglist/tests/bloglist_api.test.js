@@ -66,10 +66,27 @@ test('if neither title nor url field is provided, respond with 400 Bad Request',
   
     const response = await api.post('/api/blogs').send(newBlog);
   
-    // Tarkista, että vastaus on statuskoodilla 400 ja että siinä on virheilmoitus
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe('Title and url are required fields.');
-  });
+    expect(response.status).toBe(400)
+    expect(response.body.error).toBe('Title and url are required fields.')
+})
+
+test('deleting a blog by ID', async () => {
+    const newBlog = new Blog({
+      title: 'Pekka Puupään blogi',
+      author: 'Pekka Puupää',
+      url: 'www.bloglist.com',
+      likes: 5,
+    })
+
+    const savedBlog = await newBlog.save()
+
+    const blogId = savedBlog._id
+
+    await api.delete(`/api/blogs/${blogId}`).expect(204)
+
+    const deletedBlog = await Blog.findById(blogId)
+    expect(deletedBlog).toBeNull()
+})
   
 
 afterAll(async () => {
