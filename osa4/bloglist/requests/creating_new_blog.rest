@@ -1,9 +1,0 @@
-POST http://localhost:3003/api/blogs
-Content-Type: application/json
-
-{
-    "title": "Jouluksi kotiin",
-    "author": "Petteri Punakuono",
-    "url": "www.bloglist.com",
-    "likes": 0
-}
