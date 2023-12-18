@@ -63,6 +63,18 @@ test("if likes field is not provided, set it to 0", async () => {
   }
 })
 
+test("if neither title nor url field is provided, respond with 400 Bad Request", async () => {
+  const newBlog = {
+    author: "Pekka Puupää",
+    likes: 3,
+  }
+
+  const response = await api.post("/api/blogs").send(newBlog)
+
+  expect(response.status).toBe(400)
+  expect(response.body.error).toBe("Title and url are required fields.")
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

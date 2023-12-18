@@ -6,14 +6,24 @@ blogsRouter.get("/", async (request, response) => {
     response.json(blogs)
 })
   
-blogsRouter.post('/', (request, response) => {
-    const blog = new Blog(request.body)
+blogsRouter.post('/', async (request, response) => {
+    const { title, author, url, likes } = request.body
+
+    if (!title || !url) 
+    {
+      return response.status(400).json({ error: 'Title and url are required fields.' })
+    }
   
-    blog
-      .save()
-      .then(result => {
-        response.status(201).json(result)
+    const newBlog = new Blog({
+      title,
+      author,
+      url,
+      likes: likes !== undefined ? likes : 0,
     })
+  
+    const savedBlog = await newBlog.save()
+  
+    response.status(201).json(savedBlog)
 })
 
 module.exports = blogsRouter
