@@ -5,18 +5,47 @@ const User = require("../models/user")
 usersRouter.post("/", async (request, response) => {
     const { username, name, password } = request.body
 
-    const saltRounds = 10
-    const passwordHash = await bcrypt.hash(password, saltRounds)
+    if (username && password)
+    {
+        if (username.length > 3 && password.length > 3)
+        {
+            const findUser = await User.findOne({ username })
 
-    const user = new User({
-        username,
-        name,
-        passwordHash,
-    })
+            if (findUser)
+            {
+                return response.status(400).json({
+                    error: "username already exists",
+                })
+            }
 
-    const savedUser = await user.save()
+            const saltRounds = 10
+            const passwordHash = await bcrypt.hash(password, saltRounds)
+        
+            const user = new User({
+                username,
+                name,
+                passwordHash,
+            })
+        
+            const savedUser = await user.save()
+        
+            response.status(201).json(savedUser)
+        }
+        else
+        {
+            return response.status(400).json({
+                error: "username and password has to be over three characters long",
+            })
+        }
+    }
+    else
+    {
+        return response.status(400).json({
+            error: "username and password has to exist",
+        })
+    }
 
-    response.status(201).json(savedUser)
+
 })
 
 usersRouter.get("/", async (request, response) => {
