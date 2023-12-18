@@ -93,6 +93,27 @@ test("deleting a blog by ID", async () => {
   expect(deletedBlog).toBeNull()
 })
 
+test("updating likes of a blog by id", async () => {
+  const newBlog = new Blog({
+      title: "Uusi blogi",
+      author: "Pekka Rautapää",
+      url: "www.bloglist.com",
+      likes: 5,
+  })
+
+  const savedBlog = await newBlog.save()
+
+  const blogId = savedBlog._id
+
+  const newLikes = 10
+  const response = await api.put(`/api/blogs/${blogId}`).send({ likes: newLikes })
+
+  expect(response.body.likes).toBe(newLikes)
+
+  const updatedBlog = await Blog.findById(blogId)
+  expect(updatedBlog.likes).toBe(newLikes)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
