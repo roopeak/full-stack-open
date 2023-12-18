@@ -23,13 +23,13 @@ test("blog indentification field is id", async () => {
   allIds.forEach(id => expect(id).toBeDefined())
 })
 
-test('can add a blog via HTTP POST', async () => {
+test("can add a blog via HTTP POST", async () => {
   const initialBlogs = await Blog.find({})
 
   const newBlog = {
-    title: 'async/await simplifies making async calls',
-    author: 'Pekka Puupää',
-    url: 'https://example.com',
+    title: "async/await simplifies making async calls",
+    author: "Pekka Puupää",
+    url: "www.bloglist.com",
     likes: 10,
   }
 
@@ -38,6 +38,29 @@ test('can add a blog via HTTP POST', async () => {
   const finalBlogs = await Blog.find({})
 
   expect(finalBlogs).toHaveLength(initialBlogs.length + 1)
+})
+
+
+test("if likes field is not provided, set it to 0", async () => {
+  const newBlog = {
+    title: "async/await simplifies making async calls",
+    author: "Pekka Puupää",
+    url: "www.bloglist.com",
+  }
+
+  if (newBlog.likes == undefined)
+  {
+      newBlog["likes"] = 0
+      const response = await api.post('/api/blogs').send(newBlog)
+
+      expect(response.status).toBe(201)
+      expect(response.body.likes).toBe(0)
+  }
+  else
+  {
+      const response = await api.post('/api/blogs').send(newBlog)
+      expect(response.status).toBe(201)
+  }
 })
 
 afterAll(async () => {
