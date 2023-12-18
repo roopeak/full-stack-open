@@ -6,9 +6,9 @@ const helper = require("./test_helper")
 const Blog = require("../models/blog")
 
 beforeEach(async () => {
-    await Blog.deleteMany({});
-    await Blog.insertMany(helper.initialBlogs);
-});
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.initialBlogs)
+})
 
 test("blogs are returned as json", async () => {
   await api
@@ -73,6 +73,24 @@ test("if neither title nor url field is provided, respond with 400 Bad Request",
 
   expect(response.status).toBe(400)
   expect(response.body.error).toBe("Title and url are required fields.")
+})
+
+test("deleting a blog by ID", async () => {
+  const newBlog = new Blog({
+    title: "Pekka Puupään blogi",
+    author: "Pekka Puupää",
+    url: "www.bloglist.com",
+    likes: 5,
+  })
+
+  const savedBlog = await newBlog.save()
+
+  const blogId = savedBlog._id
+
+  await api.delete(`/api/blogs/${blogId}`).expect(204)
+
+  const deletedBlog = await Blog.findById(blogId)
+  expect(deletedBlog).toBeNull()
 })
 
 afterAll(async () => {
