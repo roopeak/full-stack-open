@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Pekka Puupään seikkailut",
+  "title": "Pekka Puupään seikkailut osa 2",
   "author": "Pekka Puupää",
   "url": "www.bloglist.com",
-  "likes": 10
+  "likes": 1
 }
