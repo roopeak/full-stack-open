@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Pekka Puupään seikkailut osa 2",
-  "author": "Pekka Puupää",
-  "url": "www.bloglist.com",
-  "likes": 1
+  "title": "Jouluturinoita",
+  "author": "Matti Luukkainen",
+  "url": "www.bloglist.com/joulutarinoita",
+  "likes": 1,
+  "userId": "65830561fb1b544895c1f5c8"
 }
