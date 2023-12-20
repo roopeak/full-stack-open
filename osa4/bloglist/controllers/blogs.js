@@ -3,16 +3,6 @@ const Blog = require("../models/blog")
 const User = require("../models/user")
 const jwt = require("jsonwebtoken")
 
-// const getTokenFrom = request => {
-//     const authorization = request.get("authorization")
-//     if (authorization && authorization.startsWith("bearer"))
-//     {
-//         return authorization.replace("bearer ", "")
-//     }
-
-//     return null
-// }
-
 blogsRouter.get("/", async (request, response) => {
     const blogs = await Blog
         .find({}).populate("user", { username: 1, name: 1 })
@@ -21,7 +11,7 @@ blogsRouter.get("/", async (request, response) => {
 })
   
 blogsRouter.post('/', async (request, response) => {
-    const { title, author, url, likes, userId } = request.body
+    const { title, author, url, likes } = request.body
 
     const devodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!devodedToken.id)
@@ -53,18 +43,51 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete("/:id", async (request, response) => {
+    const token = request.token
+
+    try {
+        const devodedToken = jwt.verify(token, process.env.SECRET)
+
+        if (!(token && devodedToken.id))
+        {
+            return response.status(401).json({
+                error: "token invalid"
+            })
+        }
+
+        const blogId = request.params.id
+
+        const blog = await Blog.findById(blogId)
+    
+        if (blog.user.toString() === devodedToken.id)
+        {
+            await Blog.findByIdAndDelete(blogId)
+            response.sendStatus(204)
+        }
+        else
+        {
+            response.status(404).json({ error: "Blog not found" })
+        }
+
+    } catch {
+        return response.status(401).json({
+            error: "token invalid"
+        })
+    }
+})
+
+blogsRouter.get("/:id", async (request, response) => {
     const blogId = request.params.id
 
     const blog = await Blog.findById(blogId)
 
     if (blog)
     {
-        await Blog.findByIdAndDelete(request.params.id)
-        response.status(204).end()
+        response.json(blog.toJSON())
     }
     else
     {
-        response.status(404).json({ error: "Blog not found" })
+        response.status(404).end()
     }
 })
 
