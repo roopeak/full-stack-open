@@ -8,6 +8,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [newBlog, setNewBlog] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [infoMessage, setInfoMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -47,7 +48,7 @@ const App = () => {
       setUsername("")
       setPassword("")
     } catch (exception) {
-      setErrorMessage("wrong credentials")
+      notifyWith('wrong username or password', 'error')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -70,9 +71,21 @@ const App = () => {
           setNewBlog('')
         })
 
+    notifyWith(`a new blog ${title} by ${author} added`, 'info')
+
     setTitle('')
     setAuthor('')
     setUrl('')
+  }
+
+  const notifyWith = (message, type='info') => {
+    setInfoMessage({
+      message, type
+    })
+
+    setTimeout(() => {
+      setInfoMessage(null)
+    }, 5000)
   }
 
   const logout = () => {
@@ -84,7 +97,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={errorMessage} />
+        <Notification info={infoMessage} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -113,6 +126,7 @@ const App = () => {
   return (
     <div>
         <h2>blogs</h2>
+        <Notification info={infoMessage} />
         <p>
           {user.name} logged in 
           <button onClick={logout}>logout</button>
