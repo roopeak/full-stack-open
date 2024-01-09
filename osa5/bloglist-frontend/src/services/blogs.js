@@ -21,4 +21,8 @@ const create = async newObject => {
   return response.data
 }
 
+<<<<<<< HEAD
 export default { getAll, setToken, create }
+=======
+export default { getAll, create, setToken }
+>>>>>>> c016d8338b600ab3438c67c83cd23af8bf3d17ec
