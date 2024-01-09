@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -76,75 +78,28 @@ const App = () => {
   
   const loginForm = () => (
     <div>
-      <Notification info={infoMessage} />
-      <form onSubmit={handleLogin}>
-        <div>
-          username
-            <input
-            type='text'
-            value={username}
-            name='Username'
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-            <input
-            type='password'
-            value={password}
-            name='Password'
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
     </div>
   )
 
   const blogForm = () => (
     <div>
-      <Notification info={infoMessage} />
-        <p>
-          {user.name} logged in
-          <button onClick={handleLogout}>logout</button>  
-        </p>
-      <div>
-      <form onSubmit={addBlog}>
-        <div>
-          title:
-            <input
-            type='text'
-            value={title}
-            name='Title'
-            onChange={({ target }) => setTitle(target.value)}
-            />
-        </div>
-        <div>
-          author:
-            <input
-            type='text'
-            value={author}
-            name='Author'
-            onChange={({ target }) => setAuthor(target.value)}
-            />
-        </div>
-        <div>
-          url:
-            <input
-            type='text'
-            value={url}
-            name='URL'
-            onChange={({ target }) => setUrl(target.value)}
-            />
-        </div>
-        <button type='submit'>add blog</button>
-      </form>
-      </div>
-      <div>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
-      </div>
+      <h2>create new</h2>
+      <BlogForm
+        title={title}
+        author={author}
+        url={url}
+        handleTitleChange={({ target }) => setTitle(target.value)}
+        handleAuthorChange={({ target }) => setAuthor(target.value)}
+        handleUrlChange={({ target }) => setUrl(target.value)}
+        handleSubmit={addBlog}
+      />
     </div>
   )
 
@@ -173,14 +128,22 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
-
+      <Notification info={infoMessage} />
       {!user && loginForm()} 
       {user && <div>
+        <h2>blogs</h2>
+        <p>
+          {user.name} logged in
+          <button onClick={handleLogout}>logout</button>  
+        </p>
           {blogForm()}
-        </div>  
+        <div>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </div>
+        </div>
       }
-
     </div>
   )
 }
