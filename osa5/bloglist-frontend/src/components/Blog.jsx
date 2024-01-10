@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user }) => {
   const [visible, setVisible] = useState(false)
 
   const toggleVisibility = () => {
@@ -35,6 +35,9 @@ const Blog = ({ blog }) => {
         <div>
           likes {blog.likes}
           <button>like</button>
+        </div>
+        <div>
+          {user.name}
         </div>
       </div>  
     )
