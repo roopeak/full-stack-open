@@ -114,15 +114,13 @@ const App = () => {
   }
 
   const updateLike = async (id, updatedBlog) => {
-    try {
       const response = await blogService.update(id, updatedBlog);
 
       setBlogs(
-        blogs.map((blog) => (blog.id === response.id ? response : blog))
-      );
-    } catch (exception) {
-      setMessage("error" + exception.response.data.error);
-    }
+        blogs.map(
+          (blog) =>
+            (blog.id === response.id ? response : blog))
+      )
   }
 
 	const blogFormRef = useRef()
@@ -139,7 +137,9 @@ const App = () => {
         </p>
           {blogForm()}
         <div>
-          {blogs.map(blog =>
+          {blogs
+          .sort((a, b) => a.likes - b.likes)
+            .map(blog =>
             <Blog key={blog.id} blog={blog} user={user} updateLike={updateLike} />
           )}
         </div>
