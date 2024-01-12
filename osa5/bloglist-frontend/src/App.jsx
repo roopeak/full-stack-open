@@ -10,7 +10,7 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [infoMessage, setInfoMessage] = useState(null)
-	const [errorMessage, setErrorMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -21,7 +21,7 @@ const App = () => {
       .getAll()
       .then(blogs => {
         setBlogs(blogs)
-      })  
+      })
   }, [])
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -73,44 +73,44 @@ const App = () => {
     window.location.reload(false)
     setUser(null)
   }
-  
+
   const loginForm = () => (
-		<div>
-				<h2>login to application</h2>
-				<Notification info={infoMessage} />
-				<LoginForm
-					username={username}
-					password={password}
-					handleUsernameChange={({ target }) => setUsername(target.value)}
-					handlePasswordChange={({ target }) => setPassword(target.value)}
-					handleSubmit={handleLogin}
-				/>
-		</div>
-	)
-  
+    <div>
+      <h2>login to application</h2>
+      <Notification info={infoMessage} />
+      <LoginForm
+        username={username}
+        password={password}
+        handleUsernameChange={({ target }) => setUsername(target.value)}
+        handlePasswordChange={({ target }) => setPassword(target.value)}
+        handleSubmit={handleLogin}
+      />
+    </div>
+  )
+
   const blogForm = () => (
-		<Togglable buttonLabel="new blog" ref={blogFormRef}>
-			<BlogForm createBlog={addBlog} />
-		</Togglable>
-	)
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <BlogForm createBlog={addBlog} />
+    </Togglable>
+  )
 
   const addBlog = (blogObject) => {
-		const title = blogObject.title
-		const author = blogObject.author
-		const url = blogObject.url
+    const title = blogObject.title
+    const author = blogObject.author
+    const url = blogObject.url
 
-		if (title && author && url) {
-			blogService
-				.create(blogObject)
-				.then(returnedBlog => {
-					setBlogs(blogs.concat(returnedBlog))
-				})
+    if (title && author && url) {
+      blogService
+        .create(blogObject)
+        .then(returnedBlog => {
+          setBlogs(blogs.concat(returnedBlog))
+        })
 
-			notifyWith(`a new blog ${title} by ${author} added`, 'info')
-			blogFormRef.current.toggleVisibility()
-		} else {
-			notifyWith(`Title, author and URL are mandatory`, 'error')
-		}
+      notifyWith(`a new blog ${title} by ${author} added`, 'info')
+      blogFormRef.current.toggleVisibility()
+    } else {
+      notifyWith('Title, author and URL are mandatory', 'error')
+    }
   }
 
   const updateLike = async (id, updatedBlog) => {
@@ -120,7 +120,7 @@ const App = () => {
       blogs.map(
         (blog) =>
           (blog.id === response.id ? response : blog))
-    ) 
+    )
   }
 
   const updateRemove = async (id) => {
@@ -131,34 +131,34 @@ const App = () => {
     )
   }
 
-	const blogFormRef = useRef()
+  const blogFormRef = useRef()
 
   return (
     <div>
       {!user && loginForm()}
       {user && <div>
         <h2>blogs</h2>
-				<Notification info={infoMessage} />
+        <Notification info={infoMessage} />
         <p>
           {user.name} logged in
-          <button onClick={handleLogout}>logout</button>  
+          <button onClick={handleLogout}>logout</button>
         </p>
-          {blogForm()}
+        {blogForm()}
         <div>
           {blogs
             .sort((a, b) => b.likes - a.likes)
-              .map(blog =>
-              <Blog 
-                key={blog.id} 
-                blog={blog} 
-                user={user} 
+            .map(blog =>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                user={user}
                 username={user.username}
-                updateLike={updateLike} 
-                updateRemove={updateRemove} 
+                updateLike={updateLike}
+                updateRemove={updateRemove}
               />
-          )}
+            )}
         </div>
-        </div>
+      </div>
       }
     </div>
   )

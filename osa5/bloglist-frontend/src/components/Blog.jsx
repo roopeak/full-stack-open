@@ -1,14 +1,11 @@
-import React, { useState } from "react"
+import React, { useState } from 'react'
 
 const Blog = ({ blog, user, updateLike, updateRemove }) => {
   const [visible, setVisible] = useState(false)
 
   const toggleVisibility = () => {
     setVisible(!visible)
-  };
-
-  console.log("Blog: ", blog)
-  console.log("User: ", user)
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -28,14 +25,14 @@ const Blog = ({ blog, user, updateLike, updateRemove }) => {
     }
 
     updateLike(blog.id, updatedBlog)
-  }  
+  }
 
   const handleRemove = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       updateRemove(blog.id)
     }
   }
-  
+
   const isCurrentUser = blog.user.username === user.username
 
   return (
