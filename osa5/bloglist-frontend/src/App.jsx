@@ -114,13 +114,21 @@ const App = () => {
   }
 
   const updateLike = async (id, updatedBlog) => {
-      const response = await blogService.update(id, updatedBlog);
+    const response = await blogService.update(id, updatedBlog)
 
-      setBlogs(
-        blogs.map(
-          (blog) =>
-            (blog.id === response.id ? response : blog))
-      )
+    setBlogs(
+      blogs.map(
+        (blog) =>
+          (blog.id === response.id ? response : blog))
+    ) 
+  }
+
+  const updateRemove = async (id) => {
+    await blogService.remove(id)
+
+    setBlogs(
+      blogs.filter((blog) => blog.id !== id)
+    )
   }
 
 	const blogFormRef = useRef()
@@ -138,9 +146,16 @@ const App = () => {
           {blogForm()}
         <div>
           {blogs
-          .sort((a, b) => a.likes - b.likes)
-            .map(blog =>
-            <Blog key={blog.id} blog={blog} user={user} updateLike={updateLike} />
+            .sort((a, b) => b.likes - a.likes)
+              .map(blog =>
+              <Blog 
+                key={blog.id} 
+                blog={blog} 
+                user={user} 
+                username={user.username}
+                updateLike={updateLike} 
+                updateRemove={updateRemove} 
+              />
           )}
         </div>
         </div>
