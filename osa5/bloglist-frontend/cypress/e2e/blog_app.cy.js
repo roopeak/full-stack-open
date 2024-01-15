@@ -11,4 +11,28 @@ describe('Blog app', function() {
     cy.contains('password')
     cy.contains('login').click()
   })
+
+  describe('Login',function() {
+    it.only('succeeds with correct credentials', function() {
+      cy.request('POST', 'http://localhost:3003/api/users', {
+        username: 'mluukkai', password: 'salainen'
+      })
+
+      cy.contains('login').click()
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
+      cy.get('#login-button').click()
+
+      cy.get('html').should('contain', 'logged in')
+    })
+
+    it.only('fails with wrong credentials', function() {
+      cy.contains('login').click()
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('wrong')
+      cy.get('#login-button').click()
+
+      cy.contains('wrong username or password')
+    })
+  })
 })
