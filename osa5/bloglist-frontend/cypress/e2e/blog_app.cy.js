@@ -58,5 +58,30 @@ describe('Blog app', function() {
       cy.contains('a blog created by cypress')
     })
   })
-})
 
+  describe('and several blogs exist', function () {
+    beforeEach(function ()  {
+      cy.request('POST', 'http://localhost:3003/api/users', {
+        username: 'mluukkai', password: 'salainen'
+      })
+
+      cy.contains('login').click()
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
+      cy.get('#login-button').click()
+
+      cy.contains('new blog').click()
+      cy.get('#blog-title').type('first blog')
+      cy.get('#blog-author').type('a new author')
+      cy.get('#blog-url').type('www.example.com')
+
+      cy.get('#create-button').click()
+    })
+
+    it('one of those can be be liked', function () {
+      cy.contains('view').click()
+      cy.contains('first blog').parent().find('button')
+        .should('contain', 'like')
+    })
+  })
+})
