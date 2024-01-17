@@ -83,5 +83,11 @@ describe('Blog app', function() {
       cy.contains('first blog').parent().find('button')
         .should('contain', 'like')
     })
+
+    it('one of those can be removed', function () {
+      cy.contains('view').click()
+      cy.contains('first blog').parent().find('button')
+        .should('contain', 'remove')
+    })
   })
 })

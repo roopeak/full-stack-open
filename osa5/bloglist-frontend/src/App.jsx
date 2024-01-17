@@ -90,21 +90,19 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel='new blog' ref={blogFormRef}>
-      <BlogForm createBlog={addBlog} />
+      <BlogForm createBlog={addBlog} user={user} />
     </Togglable>
   )
 
-  const addBlog = (blogObject) => {
+  const addBlog = async (blogObject) => {
     const title = blogObject.title
     const author = blogObject.author
     const url = blogObject.url
 
     if (title && author && url) {
-      blogService
-        .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-        })
+      await blogService.create(blogObject)
+
+      setBlogs(blogs.concat(blogObject))
 
       notifyWith(`a new blog ${title} by ${author} added`, 'info')
       blogFormRef.current.toggleVisibility()
@@ -144,20 +142,17 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
         </p>
         {blogForm()}
-        <div>
-          {blogs
-            .sort((a, b) => b.likes - a.likes)
-            .map(blog =>
-              <Blog
-                key={blog.id}
-                blog={blog}
-                user={user}
-                username={user.username}
-                updateLike={updateLike}
-                updateRemove={updateRemove}
-              />
-            )}
-        </div>
+        {blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              user={user}
+              updateLike={updateLike}
+              updateRemove={updateRemove}
+            />
+          ))}
       </div>
       }
     </div>
