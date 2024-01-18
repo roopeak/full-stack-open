@@ -65,6 +65,10 @@ describe('Blog app', function() {
         username: 'mluukkai', password: 'salainen'
       })
 
+      cy.request('POST', 'http://localhost:3003/api/users', {
+        username: 'roopekar', password: 'salasana'
+      })
+
       cy.contains('login').click()
       cy.get('#username').type('mluukkai')
       cy.get('#password').type('salainen')
@@ -88,6 +92,17 @@ describe('Blog app', function() {
       cy.contains('view').click()
       cy.contains('first blog').parent().find('button')
         .should('contain', 'remove')
+    })
+
+    it('remove button shows only to who created the blog', function () {
+      cy.contains('logout').click()
+      cy.contains('login').click()
+      cy.get('#username').type('roopekar')
+      cy.get('#password').type('salasana')
+      cy.get('#login-button').click()
+      cy.contains('view').click()
+      cy.contains('first blog').parent().find('button')
+        .should('not.contain', 'remove')
     })
   })
 })
