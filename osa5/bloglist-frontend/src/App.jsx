@@ -112,6 +112,9 @@ const App = () => {
   }
 
   const updateLike = async (id, updatedBlog) => {
+    console.log('This is blog id: ' + id)
+    console.log('This is blog object: ' + updatedBlog)
+    
     const response = await blogService.update(id, updatedBlog)
 
     setBlogs(

@@ -102,7 +102,25 @@ describe('Blog app', function() {
       cy.get('#login-button').click()
       cy.contains('view').click()
       cy.contains('first blog').parent().find('button')
-        .should('not.contain', 'remove')
+        .should('not.contain', 'remove').wait(500)
+    })
+
+    it('blogs are sorted according to likes', function () {
+      cy.get('#new-blog-button').click()
+      cy.get('#blog-title').type('second blog')
+      cy.get('#blog-author').type('a newest author')
+      cy.get('#blog-url').type('www.example.com')
+
+      cy.get('#create-button').click()
+      cy.reload()
+
+      cy.contains('second blog').parent().find('button').click()
+
+      cy.contains('like').click()
+      cy.contains('like').click()
+      cy.contains('like').click()
+
+      cy.get('.blog').eq(0).should('contain', 'second blog')
     })
   })
 })
