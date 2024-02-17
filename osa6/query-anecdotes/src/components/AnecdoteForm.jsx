@@ -13,26 +13,38 @@ const AnecdoteForm = () => {
     },
   })
 
-  const addAnecdote = async (event) => {
-    event.preventDefault()
-    const content = event.target.anecdote.value
-    event.target.anecdote.value = ''
-    newAnecdoteMutation
-      .mutate({ 
-        content, votes: 0 
+const addAnecdote = async (event) => {
+  event.preventDefault()
+  const content = event.target.anecdote.value
+  event.target.anecdote.value = ''
+
+  newAnecdoteMutation.mutate(
+    { 
+      content, votes: 0 
+    },
+    {
+      onSuccess: () => {
+        notificationDispatch({
+          type: "SHOW_NOTIFICATION",
+          data: `anecdote '${content}' created`
+        })
+        setTimeout(() => {
+          notificationDispatch({ type: "HIDE_NOTIFICATION" })
+        }, 5000)
       },
-      {
-        onSuccess: () => {
-          notificationDispatch({
-            type: "SHOW_NOTIFICATION",
-            data: `anecdote '${content}' created`
-          })
-          setTimeout(() => {
-            notificationDispatch({ type: "HIDE_NOTIFICATION" })
-          }, 5000)
-        }
-      })
-  }
+      onError: () => {
+        notificationDispatch({
+          type: "SHOW_NOTIFICATION",
+          data: `too short anecdote, must have length 5 or more`
+        })
+        setTimeout(() => {
+          notificationDispatch({ type: "HIDE_NOTIFICATION" })
+        }, 5000)
+      }
+    }
+  )
+}
+
 
   return (
     <div>
