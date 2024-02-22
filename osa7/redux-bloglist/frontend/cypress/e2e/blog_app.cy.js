@@ -1,137 +1,134 @@
-describe("Blog app", function () {
-  beforeEach(function () {
-    cy.request("POST", "http://localhost:3003/api/testing/reset");
-    cy.visit("http://localhost:5173");
-  });
+describe('Blog app', function() {
+  beforeEach(function() {
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, {
+      name: 'Matti Luukkainen',
+      username: 'mluukkai',
+      password: 'salainen'
+    })
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, {
+      name: 'Arto Hellas',
+      username: 'hellas',
+      password: 'secret'
+    })
+    cy.visit('')
+  })
 
-  it("Login form is shown", function () {
-    cy.visit("http://localhost:5173");
-    cy.contains("login to application");
-    cy.contains("username");
-    cy.contains("password");
-    cy.contains("login").click();
-  });
+  it('Login form is shown', function() {
+    cy.contains('log in to application')
+  })
 
-  describe("Login", function () {
-    it("succeeds with correct credentials", function () {
-      cy.request("POST", "http://localhost:3003/api/users", {
-        username: "mluukkai",
-        password: "salainen",
-      });
+  describe('Login',function() {
+    it('succeeds with correct credentials', function() {
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('salainen')
+      cy.get('#login-button').click()
 
-      cy.contains("login").click();
-      cy.get("#username").type("mluukkai");
-      cy.get("#password").type("salainen");
-      cy.get("#login-button").click();
+      cy.contains('welcome')
+    })
 
-      cy.get("html").should("contain", "logged in");
-    });
+    it('fails with wrong credentials', function() {
+      cy.get('#username').type('mluukkai')
+      cy.get('#password').type('wrong')
+      cy.get('#login-button').click()
 
-    it("fails with wrong credentials", function () {
-      cy.contains("login").click();
-      cy.get("#username").type("mluukkai");
-      cy.get("#password").type("wrong");
-      cy.get("#login-button").click();
+      cy.contains('wrong username or password')
+    })
+  })
 
-      cy.contains("wrong username or password");
-    });
-  });
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.login({ username: 'mluukkai', password: 'salainen' })
+    })
 
-  describe("when logged in", function () {
-    beforeEach(function () {
-      cy.request("POST", "http://localhost:3003/api/users", {
-        username: "mluukkai",
-        password: "salainen",
-      });
+    it('A blog can be created', function() {
+      cy.contains('new note').click()
+      cy.get('#title').type('You’re NOT gonna need it!')
+      cy.get('#author').type('Ron Jeffries')
+      cy.get('#url').type('https://ronjeffries.com/xprog/articles/practices/pracnotneed/')
+      cy.contains('create').click()
 
-      cy.contains("login").click();
-      cy.get("#username").type("mluukkai");
-      cy.get("#password").type("salainen");
-      cy.get("#login-button").click();
-    });
+      cy.contains('You’re NOT gonna need it!')
+      cy.contains('Ron Jeffries')
+    })
+  })
 
-    it("a new blog can be created", function () {
-      cy.contains("new blog").click();
-      cy.get("#blog-title").type("a blog created by cypress");
-      cy.get("#blog-author").type("a new author");
-      cy.get("#blog-url").type("www.example.com");
+  describe('When a blog has been created', function() {
+    beforeEach(function() {
+      cy.login({ username: 'mluukkai', password: 'salainen' })
+      cy.createBlog({
+        title: 'You’re NOT gonna need it!',
+        author: 'Ron Jeffries',
+        url: 'https://ronjeffries.com/xprog/articles/practices/pracnotneed//'
+      })
+    })
 
-      cy.get("#create-button").click();
-      cy.contains("a blog created by cypress");
-    });
-  });
+    it('it can be liked', function() {
+      cy.contains('show').click()
+      cy.contains('like').click()
 
-  describe("and several blogs exist", function () {
-    beforeEach(function () {
-      cy.request("POST", "http://localhost:3003/api/users", {
-        username: "mluukkai",
-        password: "salainen",
-      });
+      cy.contains('likes 1')
+    })
 
-      cy.request("POST", "http://localhost:3003/api/users", {
-        username: "roopekar",
-        password: "salasana",
-      });
+    it('the creator can delete it', function() {
+      cy.contains('show').click()
+      cy.contains('delete').click()
 
-      cy.contains("login").click();
-      cy.get("#username").type("mluukkai");
-      cy.get("#password").type("salainen");
-      cy.get("#login-button").click();
+      cy.contains('removed')
+      cy.get('html').should('not.contain', 'You’re NOT gonna need it!')
+    })
 
-      cy.contains("new blog").click();
-      cy.get("#blog-title").type("first blog");
-      cy.get("#blog-author").type("a new author");
-      cy.get("#blog-url").type("www.example.com");
+    it('a non creator can not delete a blog', function() {
+      cy.contains('logout').click()
+      cy.login({ username: 'hellas', password: 'secret' })
+      cy.contains('show').click()
+      cy.contains('delete').should('not.exist')
+    })
+  })
 
-      cy.get("#create-button").click();
-    });
+  describe('When there exists several blogs', function() {
+    const blogs = [
+      { title: 'blog1', author: 'author1', url: 'google.com' },
+      { title: 'blog2', author: 'author2', url: 'google.com' },
+      { title: 'blog3', author: 'author3', url: 'google.com' },
+    ]
 
-    it("one of those can be be liked", function () {
-      cy.contains("view").click();
-      cy.contains("first blog")
-        .parent()
-        .find("button")
-        .should("contain", "like");
-    });
+    beforeEach(function() {
+      cy.login({ username: 'mluukkai', password: 'salainen' })
+      cy.createBlog(blogs[0])
+      cy.createBlog(blogs[1])
+      cy.createBlog(blogs[2])
+    })
 
-    it("one of those can be removed", function () {
-      cy.contains("view").click();
-      cy.contains("first blog")
-        .parent()
-        .find("button")
-        .should("contain", "remove");
-    });
+    it('those are ordered by the likes', function() {
+      cy.contains(blogs[0].title).contains('show').click()
+      cy.contains(blogs[0].title).contains('like').as('like0')
+      cy.contains(blogs[1].title).contains('show').click()
+      cy.contains(blogs[1].title).contains('like').as('like1')
+      cy.contains(blogs[2].title).contains('show').click()
+      cy.contains(blogs[2].title).contains('like').as('like2')
 
-    it("remove button shows only to who created the blog", function () {
-      cy.contains("logout").click();
-      cy.contains("login").click();
-      cy.get("#username").type("roopekar");
-      cy.get("#password").type("salasana");
-      cy.get("#login-button").click();
-      cy.contains("view").click();
-      cy.contains("first blog")
-        .parent()
-        .find("button")
-        .should("not.contain", "remove")
-        .wait(500);
-    });
+      cy.get('@like2').click()
+      cy.contains(blogs[2].title).contains('likes 1')
+      cy.get('@like2').click()
+      cy.contains(blogs[2].title).contains('likes 1')
+      cy.get('@like2').click()
+      cy.contains(blogs[2].title).contains('likes 2')
+      cy.get('@like2').click()
+      cy.contains(blogs[2].title).contains('likes 3')
 
-    it("blogs are sorted according to likes", function () {
-      cy.get("#new-blog-button").click();
-      cy.get("#blog-title").type("second blog");
-      cy.get("#blog-author").type("a newest author");
-      cy.get("#blog-url").type("www.example.com");
+      cy.get('@like1').click()
+      cy.contains(blogs[1].title).contains('likes 1')
+      cy.get('@like1').click()
+      cy.contains(blogs[1].title).contains('likes 2')
 
-      cy.get("#create-button").click();
-      cy.reload();
+      cy.get('@like0').click()
+      cy.contains(blogs[0].title).contains('likes 1')
 
-      cy.contains("second blog").parent().find("button").click();
+      cy.get('.blog').eq(0).should('contain', blogs[2].title)
+      cy.get('.blog').eq(1).should('contain', blogs[1].title)
+      cy.get('.blog').eq(2).should('contain', blogs[0].title)
+    })
 
-      cy.contains("like").click();
-      cy.contains("like").click();
-      cy.contains("like").click();
-
-      cy.get(".blog").eq(0).should("contain", "second blog");
-    });
-  });
-});
+  })
+})
