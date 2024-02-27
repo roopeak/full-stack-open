@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setNotification, hideNotification } from './reducers/bloglistReducer'
+
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -10,9 +13,12 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
 const App = () => {
+  const dispatch = useDispatch()
+  const { info } = useSelector(state => state)
+
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState('')
-  const [info, setInfo] = useState({ message: null })
+  // const [info, setInfo] = useState({ message: null })
 
   const blogFormRef = useRef()
 
@@ -27,13 +33,11 @@ const App = () => {
     )
   }, [])
 
-  const notifyWith = (message, type='info') => {
-    setInfo({
-      message, type
-    })
+  const notifyWith = (message, type = 'info') => {
+    dispatch(setNotification(message, type))
 
     setTimeout(() => {
-      setInfo({ message: null } )
+      dispatch(hideNotification())
     }, 3000)
   }
 
@@ -75,7 +79,6 @@ const App = () => {
       notifyWith(`The blog' ${blog.title}' by '${blog.author} removed`)
       setBlogs(blogs.filter(b => b.id !== blog.id))
     }
-
   }
 
   if (!user) {
