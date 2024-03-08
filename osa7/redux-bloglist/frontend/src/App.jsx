@@ -1,11 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-
-import blogService from './services/blogs'
 import loginService from './services/login'
 import storageService from './services/storage'
 
-import Blog from './components/Blog'
 import BlogList from './components/BlogList'
 import LoginForm from './components/Login'
 import NewBlog from './components/NewBlog'
