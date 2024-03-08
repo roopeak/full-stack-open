@@ -1,13 +1,34 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { removeBlog, likeBlog } from '../reducers/bloglistReducer'
 
-const Blog = ({ blog, like, canRemove, remove }) => {
+const Blog = ({ blog, canRemove }) => {
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
 
   const style = {
     marginBottom: 2,
     padding: 5,
     borderStyle: 'solid'
+  }
+
+  const remove = () => {
+    const ok = window.confirm(
+      `Sure you want to remove '${blog.title}' by ${blog.author}`)
+    if (ok) {
+      dispatch(removeBlog(blog))
+    }
+  }
+
+  const like = () => {
+    const id = blog
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    }
+    dispatch(likeBlog(updatedBlog))
   }
 
   return (
