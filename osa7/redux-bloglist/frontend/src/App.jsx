@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Routes, Route } from 'react-router-dom'
 
 import BlogList from './components/BlogList'
 import LoginForm from './components/Login'
@@ -12,6 +13,7 @@ import userService from "./services/user"
 import { initializeBlogs } from "./reducers/bloglistReducer"
 import { initializeUser } from './reducers/userReducer'
 import { login, userLogin, userLogout } from './reducers/loginReducer'
+import Users from './components/Users'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -47,15 +49,17 @@ const App = () => {
       <Notification />
       <div>
         {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
       </div>
+      <button onClick={handleLogout}>logout</button>
       <Togglable buttonLabel='new note' ref={blogFormRef}>
         <NewBlog />
       </Togglable>
-      <BlogList />
+      <Routes>
+        <Route path="/users" element={<Users />} />
+        <Route path="/" element={<BlogList />} />
+      </Routes>
     </div>
   )
-  
 }
 
   
