@@ -1,9 +1,13 @@
 import axios from 'axios'
-import storageService from './storage'
+import userService from './user'
 const baseUrl = 'http://localhost:3003/api/blogs'
 
-const headers = {
-  'Authorization': storageService.loadUser() ? `Bearer ${storageService.loadUser().token}` : null
+const headers = () => {
+  return {
+    headers: {
+      'Authorization': `bearer ${userService.getToken()}`
+    }
+  }
 }
 
 const getAll = async () => {
@@ -12,17 +16,17 @@ const getAll = async () => {
 }
 
 const create = async (object) => {
-  const request = await axios.post(baseUrl, object, { headers })
+  const request = await axios.post(baseUrl, object, headers() )
   return request.data
 }
 
 const update = async (object) => {
-  const request = await axios.put(`${baseUrl}/${object.id}`, object, { headers })
+  const request = await axios.put(`${baseUrl}/${object.id}`, object, headers() )
   return request.data
 }
 
 const remove = async (id) => {
-  await axios.delete(`${baseUrl}/${id}`, { headers })
+  await axios.delete(`${baseUrl}/${id}`, headers() )
 }
 
 export default { getAll, create, update, remove }

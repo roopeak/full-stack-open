@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import loginService from './services/login'
-import storageService from './services/storage'
 
 import BlogList from './components/BlogList'
 import LoginForm from './components/Login'
@@ -9,44 +7,37 @@ import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
+import userService from "./services/user"
+
 import { initializeBlogs } from "./reducers/bloglistReducer"
+import { initializeUser } from './reducers/userReducer'
+import { login, userLogin, userLogout } from './reducers/loginReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector((state) => state.blogs)
-  const [user, setUser] = useState('')
+  const user = useSelector(state => state.login)
 
   const blogFormRef = useRef()
 
+  const handleLogout = () => {
+    dispatch(userLogout())
+  }
+
   useEffect(() => {
-    const user = storageService.loadUser()
-    setUser(user)
+    const userFromStorage = userService.getUser()
+    if (userFromStorage) {
+      dispatch(login(userFromStorage));
+    }
   }, [])
 
   useEffect(() => {
     dispatch(initializeBlogs())
-  }, [dispatch])
+    dispatch(initializeUser())
+  }, [])
 
-  const login = async (username, password) => {
-    try {
-      const user = await loginService.login({ username, password })
-      setUser(user)
-      storageService.saveUser(user)
-    } catch(e) {
-    }
-  }
-
-  const logout = async () => {
-    setUser(null)
-    storageService.removeUser()
-  }
-
-  if (!user) {
+  if (user === null) {
     return (
-      <div>
-        <h2>log in to application</h2>
-        <LoginForm login={login} />
-      </div>
+      <LoginForm />
     )
   }
 
@@ -56,14 +47,16 @@ const App = () => {
       <Notification />
       <div>
         {user.name} logged in
-        <button onClick={logout}>logout</button>
+        <button onClick={handleLogout}>logout</button>
       </div>
       <Togglable buttonLabel='new note' ref={blogFormRef}>
         <NewBlog />
       </Togglable>
-      <BlogList user={user} />
+      <BlogList />
     </div>
   )
+  
 }
 
+  
 export default App

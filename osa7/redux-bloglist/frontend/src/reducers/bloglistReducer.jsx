@@ -13,13 +13,13 @@ const bloglistSlice = createSlice({
 			state.push(action.payload)
 		},
 		deleteBlog: (state, action) => {
-      const id = action.payload
-      return state.filter(blog => blog.id !== id)
+			const id = action.payload
+			return state.filter(blog => blog.id !== id)
 		},
 		updateBlog: (state, action) => {
-      const updatedBlog = action.payload
-      const { id } = updatedBlog
-      return state.map(blog => (blog.id !== id ? blog : updatedBlog))
+			const updatedBlog = action.payload
+			const { id } = updatedBlog
+			return state.map(blog => (blog.id !== id ? blog : updatedBlog))
 		},
 	}
 })

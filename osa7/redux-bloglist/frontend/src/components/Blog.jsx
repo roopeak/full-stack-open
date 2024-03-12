@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { removeBlog, likeBlog } from '../reducers/bloglistReducer'
 
-const Blog = ({ blog, canRemove }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
+
+  const user = useSelector(state => state.login)
 
   const style = {
     marginBottom: 2,
@@ -22,7 +24,7 @@ const Blog = ({ blog, canRemove }) => {
   }
 
   const like = () => {
-    const id = blog
+    const { id } = blog
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
@@ -42,7 +44,9 @@ const Blog = ({ blog, canRemove }) => {
           <div> <a href={blog.url}> {blog.url}</a> </div>
           <div>likes {blog.likes} <button onClick={like}>like</button></div>
           <div>{blog.user && blog.user.name}</div>
-          {canRemove&&<button onClick={remove}>delete</button>}
+          {user.username === blog.user.username && (
+            <button onClick={remove}>delete</button>
+          )}
         </div>
       }
     </div>
