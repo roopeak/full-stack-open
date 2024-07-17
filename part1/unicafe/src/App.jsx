@@ -38,23 +38,29 @@ const Total = (props) => {
 }
 
 const Statistics = (props) => {
-  return (
-    <div>
-      <p>good {props.good}</p>
-      <p>neutral {props.neutral}</p>
-      <p>bad {props.bad}</p>
-      <Total all={props.good + props.neutral + props.bad} />
-      <Average 
-        good={props.good} 
-        neutral={props.neutral} 
-        bad={props.bad}
-      />
-      <Positive 
-        good={props.good}
-        all={props.good + props.neutral + props.bad}
-      />
-    </div>
-  )
+  if (props.all > 0) {
+    return (
+      <div>
+        <p>good {props.good}</p>
+        <p>neutral {props.neutral}</p>
+        <p>bad {props.bad}</p>
+        <Total all={props.good + props.neutral + props.bad} />
+        <Average 
+          good={props.good} 
+          neutral={props.neutral} 
+          bad={props.bad}
+        />
+        <Positive 
+          good={props.good}
+          all={props.good + props.neutral + props.bad}
+        />
+      </div>
+    )
+  } else {
+    return (
+      <p>No feedback given</p>
+    )
+  }
 }
 
 const Button = (props) => {
