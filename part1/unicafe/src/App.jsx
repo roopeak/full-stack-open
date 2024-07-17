@@ -1,11 +1,58 @@
 import { useState } from 'react'
 
+const Positive = (props) =>{
+  if (props.all == 0) {
+    return (
+      <p>positive 0 %</p>
+    )
+  }
+  
+  return (
+    <p>positive {props.good / props.all * 100} %</p>
+  )
+}
+
+const Average = (props) => {
+  const good = props.good
+  const neutral = props.neutral
+  const bad = props.bad
+  const total = good + neutral + bad
+
+  const average = (good - bad) / total
+  
+  if (total == 0) {
+    return (
+      <p>average 0</p>
+    )
+  }
+
+  return (
+    <p>average {average}</p>
+  )
+}
+
+const Total = (props) => {
+  return (
+    <p>all {props.all}</p>
+  )
+}
+
 const Statistics = (props) => {
   return (
     <div>
       <p>good {props.good}</p>
       <p>neutral {props.neutral}</p>
       <p>bad {props.bad}</p>
+      <Total all={props.good + props.neutral + props.bad} />
+      <Average 
+        good={props.good} 
+        neutral={props.neutral} 
+        bad={props.bad}
+      />
+      <Positive 
+        good={props.good}
+        all={props.good + props.neutral + props.bad}
+      />
     </div>
   )
 }
