@@ -1,3 +1,13 @@
+const Total = ({ parts }) => {
+	const total = parts.reduce((sum, part) =>
+		sum + part.exercises
+	, 0)
+
+	return (
+		<p><strong>total of {total} exercises</strong></p>
+	)
+}
+
 const Part = ({ parts }) => {
 	return (
 		<div>
@@ -12,6 +22,7 @@ const Content = ({ course }) => {
   return (
     <div>
 			<Part parts={course.parts} />
+			<Total parts={course.parts} />
     </div>
   )
 }
