@@ -35,12 +35,12 @@ const Header = ({ header }) => {
 }
 
 const Course = ({ course }) => {
-    return (
-      <div>
-        <Header header={course.name} />
-        <Content course={course} />
-      </div>
-    )
+	return (
+		<div>
+			<Header header={course.name} />
+			<Content course={course} />
+		</div>
+	)
 }
 
 export default Course
