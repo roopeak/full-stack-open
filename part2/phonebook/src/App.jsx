@@ -4,6 +4,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 import personService from './services/persons'
 
@@ -13,6 +14,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
 
   useEffect(() => {
     personService
@@ -44,6 +46,12 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setNotificationMessage(
+            `Added ${nameObject.name}`
+          )
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
 
       setPersons(persons.concat(nameObject))
@@ -65,11 +73,16 @@ const App = () => {
 
       const changedPersons = persons.filter(person => person.id !== id)
       setPersons(changedPersons)
+      setNotificationMessage(
+        `Removed ${person.name}`
+      )
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
     }
   }
 
   const updateNumber = (id, number) => {
-    console.log(number)
     const url = `http://localhost:3001/persons/${id}`
     const person = persons.find(person => person.id === id)
     const changedPerson = { ...person, number: number}
@@ -82,6 +95,13 @@ const App = () => {
       .catch(error => {
         console.error('Error updating person: ', error)
       })
+
+      setNotificationMessage(
+        `Updated ${changedPerson.name}`
+      )
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
   }
 
   const handleNameChange = (event) => {
@@ -103,6 +123,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage} />
       <Filter 
         newFilter={newFilter} 
         handleFilterChange={handleFilterChange}
