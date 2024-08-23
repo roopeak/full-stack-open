@@ -62,6 +62,24 @@ test('blogs can be added with POST request', async () => {
   assert.strictEqual(response.body.length, initialBlogs.length + 1)
 })
 
+test('deleting a blog by ID', async () => {
+  const newBlog = new Blog({
+    title: "Pekka Puupään blogi",
+    author: "Pekka Puupää",
+    url: "www.bloglist.com",
+    likes: 5,
+  })
+
+  const savedBlog = await newBlog.save()
+
+  const blogId = savedBlog._id
+
+  await api.delete(`/api/blogs/${blogId}`).expect(204)
+
+  const deletedBlog = await Blog.findById(blogId)
+  expect(deletedBlog).toBeNull()
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
