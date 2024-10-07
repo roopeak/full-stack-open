@@ -1,5 +1,6 @@
 const { test, after, beforeEach } = require('node:test')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
   {
@@ -52,18 +53,28 @@ const initialBlogs = [
   }  
 ]
 
-beforeEach(async () => {
-  await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[2])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[3])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[4])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[5])
-  await blogObject.save()
-})
+// beforeEach(async () => {
+//   await Blog.deleteMany({})
+//   let blogObject = new Blog(initialBlogs[0])
+//   await blogObject.save()
+//   blogObject = new Blog(initialBlogs[1])
+//   await blogObject.save()
+//   blogObject = new Blog(initialBlogs[2])
+//   await blogObject.save()
+//   blogObject = new Blog(initialBlogs[3])
+//   await blogObject.save()
+//   blogObject = new Blog(initialBlogs[4])
+//   await blogObject.save()
+//   blogObject = new Blog(initialBlogs[5])
+//   await blogObject.save()
+// })
+
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(u => u.toJSON())
+}
+
+module.exports = {
+  initialBlogs,
+  usersInDb
+}
