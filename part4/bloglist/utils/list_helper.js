@@ -5,8 +5,7 @@ const dummy = (blogs) => {
 }
 
 const totalLikes = (blogs) => {
-  const likes = blogs.reduce((sum, blog) => sum + blog.likes, 0)
-  return likes
+  return blogs.reduce((sum, blog) => sum + blog.likes, 0)
 }
 
 const favoriteBlog = (blogs) => {
@@ -23,9 +22,9 @@ const mostBlogs = (blogs) => {
   if (blogs.length === 0) return null
 
   const authorBlogCounts = lodash.countBy(blogs, 'author')
-  const topAuthor = lodash.maxBy(lodash.keys(authorBlogCounts), (author) =>
+  const topAuthor = lodash.maxBy(lodash.keys(authorBlogCounts), (author) => 
     authorBlogCounts[author])
-
+  
   return {
     author: topAuthor,
     blogs: authorBlogCounts[topAuthor]
@@ -45,7 +44,6 @@ const mostLikes = (blogs) => {
   })
 
   const topAuthor = lodash.maxBy(authorLikeCounts, 'likes')
-
   return topAuthor
 }
 

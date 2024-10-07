@@ -1,33 +1,17 @@
 const { test, after, beforeEach } = require('node:test')
-const assert = require('node:assert')
+const assert = require('assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const Blog = require('../models/blog')
-
 const api = supertest(app)
 
-const initialBlogs = [
-  {
-    title: "Example blog",
-    author: "Evan Example",
-    url: "www.example.com",
-    likes: 0
-  },
-  {
-    title: "An another example",
-    author: "Eric Example",
-    url: "www.example.com",
-    likes: 0
-  }
-]
+const helper = require('./test_helper')
+
+const Blog = require('../models/blog')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  let blogObject = new Blog(initialBlogs[0])
-  await blogObject.save()
-  blogObject = new Blog(initialBlogs[1])
-  await blogObject.save()
+  await Blog.insertMany(helper.initialBlogs)
 })
 
 test('blogs are returned as json', async () => {
@@ -40,14 +24,118 @@ test('blogs are returned as json', async () => {
 test('blogs have an id field', async () => {
   const response = await api.get('/api/blogs')
   const allIds = response.body.map((blog) => blog.id)
-  // allIds.forEach(id => expect(id).toBeDefined())
+  allIds.forEach(id => assert.ok(id, 'ID should be defined'))
 })
 
-test('blogs can be added with POST request', async () => {
+test('a valid blog can be added', async () => {
   const newBlog = {
-    title: "Adventures",
-    author: "Aaron Adventurer",
-    url: "www.example.com",
+    author: 'Test Author',
+    title: 'Test Title',
+    url: 'www.testwebsite.com',
+    likes: 0
+  }
+
+  const blogsBeforePost = await api.get('/api/blogs')
+  const blogsBeforePostLength = blogsBeforePost.body.length
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const responseAfterAdd = await api.get('/api/blogs')
+  const blogsAfterPost = responseAfterAdd.body
+
+  assert.strictEqual(blogsAfterPost.length, blogsBeforePostLength + 1)
+
+  const titles = blogsAfterPost.map(blog => blog.title)
+  assert.ok(titles.includes(newBlog.title), 'New blog title should be in the list')
+})
+
+test('if likes is not added make it zero', async () => {
+  const newBlog = {
+    author: 'Test Like',
+    title: 'Test for like',
+    url: 'www.testforlike.com'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const responseAfterAdd = await api.get('/api/blogs')
+  const blogsAfterPost = responseAfterAdd.body
+
+  const addedBlog = blogsAfterPost.find(blog => blog.title === newBlog.title)
+  assert.strictEqual(
+    addedBlog.likes, 
+    0, 
+    'Likes should default to 0 if not provided'
+  )
+})
+
+test('if title is not provided response is 400', async () => {
+  const newBlogWithoutTitle = {
+    author: 'Test without title',
+    url: 'www.example.com'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutTitle)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+})
+
+test('if url is not provided, response is 400', async () => {
+  const newBlogWithoutUrl = {
+    title: 'Missing URL test',
+    author: 'Test without url'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutUrl)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)    
+})
+
+test.only('a blog can be deleted', async () => {
+  const newBlog = {
+    title: 'Blog to be Deleted',
+    author: 'Delete Blog',
+    url: 'www.blogtobedeleted.com',
+    likes: 0
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)    
+
+  const responseAfterAdd = await api.get('/api/blogs')
+  const blogsAfterPost = responseAfterAdd.body
+
+  const addedBlog = blogsAfterPost.find(blog => blog.title === newBlog.title)
+  const newBlogId = addedBlog.id
+
+  await api
+    .delete(`/api/blogs/${newBlogId}`)
+    .expect(204)
+
+  const deletedBlog = await Blog.findById(newBlogId)
+  assert.strictEqual(deletedBlog, null)
+})
+
+test.only('a blog can be edited', async () => {
+  const newBlog = {
+    title: 'Blog to be edited',
+    author: 'Blog editor',
+    url: 'www.example.com',
     likes: 0
   }
 
@@ -57,27 +145,22 @@ test('blogs can be added with POST request', async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get('/api/blogs')
+  const responseAfterAdd = await api.get('/api/blogs')
+  const blogsAfterPost = responseAfterAdd.body
 
-  assert.strictEqual(response.body.length, initialBlogs.length + 1)
-})
+  const addedBlog = blogsAfterPost.find(blog => blog.title === newBlog.title)
+  const newBlogId = addedBlog.id
 
-test('deleting a blog by ID', async () => {
-  const newBlog = new Blog({
-    title: "Pekka Puupään blogi",
-    author: "Pekka Puupää",
-    url: "www.bloglist.com",
-    likes: 5,
-  })
+  await api
+    .put(`/api/blogs/${newBlogId}`)
+    .send({ likes: 10 })
 
-  const savedBlog = await newBlog.save()
-
-  const blogId = savedBlog._id
-
-  await api.delete(`/api/blogs/${blogId}`).expect(204)
-
-  const deletedBlog = await Blog.findById(blogId)
-  expect(deletedBlog).toBeNull()
+  const responseAfterEdit = await api.get('/api/blogs')
+  const blogsAfterEdit = responseAfterEdit.body
+  
+  const updatedBlog = blogsAfterEdit.find(blog => blog.title === newBlog.title)
+  assert.strictEqual(updatedBlog.likes, 10)
+  
 })
 
 after(async () => {
