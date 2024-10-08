@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjcwMzlmZDM3ZDE2ODE1NDU5NDZhNDc5IiwiaWF0IjoxNzI4NDA2MzI2fQ.h7fGpb6GUCvwmua04IQAGo8uBkyBqXmWcJwAGim9qaY
 
 {
-  "title": "Joulutarinoita",
+  "title": "Testiblogi",
   "author": "Arto Hellas",
-  "url": "www.bloglist.com/joulutarinoita",
+  "url": "www.bloglist.com/testiblogi",
   "likes": 0,
   "userId": "67039fd37d1681545946a479"
 }
