@@ -2,7 +2,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Kolmas testiotsikko",
-  "author": "Testi Testaaja",
-  "url": "www.testi.fi"
+  "title": "Joulutarinoita",
+  "author": "Arto Hellas",
+  "url": "www.bloglist.com/joulutarinoita",
+  "likes": 0,
+  "userId": "67039fd37d1681545946a479"
 }
