@@ -1,6 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjcwMzlmZDM3ZDE2ODE1NDU5NDZhNDc5IiwiaWF0IjoxNzI4NDA2MzI2fQ.h7fGpb6GUCvwmua04IQAGo8uBkyBqXmWcJwAGim9qaY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhlbGxhcyIsImlkIjoiNjcwMzlmZDM3ZDE2ODE1NDU5NDZhNDc5IiwiaWF0IjoxNzI4NDA3MzU0fQ.0PLGf9E9AnYbri1No8xG7gAjk2H1qW87HjbTVvlhhro
 
 {
   "title": "Testiblogi",
@@ -8,4 +8,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imhlb
   "url": "www.bloglist.com/testiblogi",
   "likes": 0,
   "userId": "67039fd37d1681545946a479"
-}
+} 
