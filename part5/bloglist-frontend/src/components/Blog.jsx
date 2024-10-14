@@ -6,7 +6,7 @@ const Blog = ({ blog, user, updateLike, updateRemove }) => {
   const toggleVisibility = () => {
     setVisible(!visible)
   }
-  console.log()
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
