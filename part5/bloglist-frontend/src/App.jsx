@@ -101,6 +101,11 @@ const App = () => {
     }
   }
 
+  const updateRemove = async (id) => {
+    await blogService.remove(id)
+    setBlogs(blogs.filter((blog) => blog.id != id))
+  }
+
   if (user === null) {
     return (
       <div>
@@ -163,6 +168,7 @@ const App = () => {
                 blog={blog} 
                 updateLike={updateLike}
                 user={user}
+                updateRemove={updateRemove}
               />
         )}
       </div>
