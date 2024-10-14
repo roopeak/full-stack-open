@@ -32,4 +32,18 @@ describe('<Togglable />', () => {
     const div = container.querySelector('.togglableContent')
     expect(div).not.toHaveStyle('display: none')
   })
+
+  test('clicking like button two times calls event handler two times', async () => { // Korjattu syntaksivirhe
+    const mockHandler = vi.fn()
+
+    const likeButton = render(
+      <button onClick={mockHandler}>like</button>
+    ).getByText('like')
+
+    const user = userEvent.setup()
+    await user.click(likeButton)
+    await user.click(likeButton)
+
+    expect(mockHandler.mock.calls).toHaveLength(2)
+  })
 })
