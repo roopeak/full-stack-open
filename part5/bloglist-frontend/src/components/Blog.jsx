@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Blog = ({ blog, user, updateLike, updateRemove }) => {
   const [visible, setVisible] = useState(false)
-  
+
   const toggleVisibility = () => {
     setVisible(!visible)
   }
@@ -60,7 +60,7 @@ const Blog = ({ blog, user, updateLike, updateRemove }) => {
           {user.name}
         </div>
         {isCurrentUser && <button onClick={handleRemove}>remove</button>}
-      </div>  
+      </div>
     )
   }
 
