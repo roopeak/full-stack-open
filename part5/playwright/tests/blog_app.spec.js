@@ -43,4 +43,23 @@ describe('Blog app', () => {
   
     })
   })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByTestId('username').fill('mluukkai')
+      await page.getByTestId('password').fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test.only('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'new blog' }).click()
+
+      await page.getByTestId('title').fill('Example title')
+      await page.getByTestId('author').fill('Example author')
+      await page.getByTestId('url').fill('Example url')
+      await page.getByRole('button', { name: 'create '}).click()
+
+      await expect(page.getByText('Example title')).toBeVisible()
+    })
+  })
 })
