@@ -38,7 +38,7 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'login' }).click()
       
       await expect(page.getByText('wrong username or password')).toBeVisible()
-  
+
     })
   })
 
@@ -46,6 +46,8 @@ describe('Blog app', () => {
     beforeEach(async ({ page }) => {
       await loginWith(page, 'mluukkai', 'salainen')
       await page.getByRole('button', { name: 'login' }).click()
+
+      await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
     })
 
     test('a new blog can be created', async ({ page }) => {
@@ -54,22 +56,33 @@ describe('Blog app', () => {
       await page.getByTestId('title').fill('Example title')
       await page.getByTestId('author').fill('Example author')
       await page.getByTestId('url').fill('www.example.com')
-      await page.getByRole('button', { name: 'create '}).click()
 
-      await expect(page.getByText('Example title')).toBeVisible()
+      await page.getByRole('button', { name: 'create' }).click()
+      const blogElement = await page.getByTestId('blog-title').nth(0)
+      await expect(blogElement).toBeVisible()
+      await expect(blogElement).toHaveText('Example titleview')
     })
 
     test('a blog can be liked', async ({ page }) => {
-      await page.getByRole('button', { name: 'new blog' }).click()
-
-      await page.getByTestId('title').fill('Example title')
-      await page.getByTestId('author').fill('Example author')
-      await page.getByTestId('url').fill('www.example.com')
-
-      await page.getByRole('button', { name: 'create'}).click()
-      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'view' }).nth(0).click()
 
       await expect(page.getByText('like')).toBeVisible()
+    })
+
+    test('an user that added a blog can remove it', async ({ page }) => { 
+      page.on('dialog', async dialog => {
+        expect(dialog.message()).toContain('Remove blog Example title by Example author')
+        await dialog.accept()
+      })
+      
+      await page.getByRole('button', { name: 'view' }).nth(0).click()
+      await expect(page.getByText('remove')).toBeVisible()
+
+      await page.getByRole('button', { name: 'remove' }).click()
+      
+      const blogTitle = page.getByText('Example title')
+
+      await expect(blogTitle).toHaveCount(0)
     })
   })
 })

@@ -37,7 +37,7 @@ const Blog = ({ blog, user, updateLike, updateRemove }) => {
 
   if (visible === false) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} data-testid='blog-title'>
         {blog.title}
         <button onClick={toggleVisibility}>view</button>
       </div>

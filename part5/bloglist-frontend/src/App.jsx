@@ -49,6 +49,7 @@ const App = () => {
         'loggedBlogappUser', JSON.stringify(user)
       )
 
+      blogService.setToken(user.token)
       setUser(user)
       setUsername('')
       setPassword('')
@@ -71,8 +72,7 @@ const App = () => {
     const blogObject = {
       title: title,
       author: author,
-      url: url,
-      user: user
+      url: url
     }
 
     blogFormRef.current.toggleVisibility()
