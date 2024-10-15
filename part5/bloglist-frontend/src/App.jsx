@@ -72,7 +72,8 @@ const App = () => {
     const blogObject = {
       title: title,
       author: author,
-      url: url
+      url: url,
+      user: user
     }
 
     blogFormRef.current.toggleVisibility()
