@@ -77,3 +77,9 @@ module.exports = defineConfig({
   // },
 });
 
+module.exports = defineConfig({
+  timeout: 3000,
+  fullyParallel: false,
+  workers: 1,
+})
+
