@@ -25,18 +25,16 @@ describe('Blog app', () => {
     test('succeeds with correct credentials', async ({ page }) => {
       await page.goto('http://localhost:5173')
 
-      await page.getByTestId('username').fill('mluukkai')
-      await page.getByTestId('password').fill('salainen')
+      await loginWith(page, 'mluukkai', 'salainen')
       await page.getByRole('button', { name: 'login' }).click()
       
       await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
     })
 
-    test.only('fails with wrong credentials', async ({ page }) => {
+    test('fails with wrong credentials', async ({ page }) => {
       await page.goto('http://localhost:5173')
 
-      await page.getByTestId('username').fill('mluukkai')
-      await page.getByTestId('password').fill('wrong')
+      await loginWith(page, 'mluukkai', 'wrong')
       await page.getByRole('button', { name: 'login' }).click()
       
       await expect(page.getByText('wrong username or password')).toBeVisible()
@@ -46,20 +44,32 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      await page.getByTestId('username').fill('mluukkai')
-      await page.getByTestId('password').fill('salainen')
+      await loginWith(page, 'mluukkai', 'salainen')
       await page.getByRole('button', { name: 'login' }).click()
     })
 
-    test.only('a new blog can be created', async ({ page }) => {
+    test('a new blog can be created', async ({ page }) => {
       await page.getByRole('button', { name: 'new blog' }).click()
 
       await page.getByTestId('title').fill('Example title')
       await page.getByTestId('author').fill('Example author')
-      await page.getByTestId('url').fill('Example url')
+      await page.getByTestId('url').fill('www.example.com')
       await page.getByRole('button', { name: 'create '}).click()
 
       await expect(page.getByText('Example title')).toBeVisible()
+    })
+
+    test('a blog can be liked', async ({ page }) => {
+      await page.getByRole('button', { name: 'new blog' }).click()
+
+      await page.getByTestId('title').fill('Example title')
+      await page.getByTestId('author').fill('Example author')
+      await page.getByTestId('url').fill('www.example.com')
+
+      await page.getByRole('button', { name: 'create'}).click()
+      await page.getByRole('button', { name: 'view' }).click()
+
+      await expect(page.getByText('like')).toBeVisible()
     })
   })
 })
