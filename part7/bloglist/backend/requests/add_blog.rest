@@ -1,0 +1,11 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+  "title": "Poistetaan tämä blogi",
+  "author": "Arto Hellas",
+  "url": "www.bloglist.com/testiblogi",
+  "likes": 0,
+  "userId": "67039fd37d1681545946a479"
+} 
