@@ -2,7 +2,8 @@ import { useState, useEffect, createRef } from "react";
 
 import BlogList from './components/BlogList'
 import { initializeBlogs } from "./reducers/bloglistReducer";
-import { useDispatch } from "react-redux";
+import { login, userLogout } from './reducers/loginReducer'
+import { useDispatch, useSelector } from "react-redux";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -13,50 +14,27 @@ import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 
-const App = () => {
-  const [user, setUser] = useState(null);
+import { Routes, Route } from "react-router-dom";
 
+const App = () => {
   const dispatch = useDispatch()
+
+  const user = useSelector(state => state.login)
+  const blogFormRef = createRef();
 
   useEffect(() => {
     dispatch(initializeBlogs())
   }, [dispatch]);
 
   useEffect(() => {
-    const user = storage.loadUser();
-    if (user) {
-      setUser(user);
+    const userFromStorage = storage.loadUser();
+    if (userFromStorage) {
+      dispatch(login(userFromStorage))
     }
-  }, []);
-
-  const blogFormRef = createRef();
-
-  const handleLogin = async (credentials) => {
-    const user = await loginService.login(credentials);
-    setUser(user);
-    storage.saveUser(user);
-  };
-
-  const handleVote = async (blog) => {
-    console.log("updating", blog);
-    const updatedBlog = await blogService.update(blog.id, {
-      ...blog,
-      likes: blog.likes + 1,
-    });
-
-    setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)));
-  };
+  }, [dispatch]);
 
   const handleLogout = () => {
-    setUser(null);
-    storage.removeUser();
-  };
-
-  const handleDelete = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.remove(blog.id);
-      setBlogs(blogs.filter((b) => b.id !== blog.id));
-    }
+    dispatch(userLogout())
   };
 
   if (!user) {
@@ -64,10 +42,11 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         <Notification />
-        <Login doLogin={handleLogin} />
+        <Login />
       </div>
     );
   }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -79,7 +58,10 @@ const App = () => {
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <NewBlog />
       </Togglable>
-      <BlogList />
+      <Routes>
+        <Route path='/' element={<BlogList />} />
+        <Route path='/blogs/:id' element={<Blog />} />
+      </Routes>
     </div>
   );
 };

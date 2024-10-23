@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import { setNotification } from "./notificationReducer"
 
 import loginService from "../services/login"
-import userService from "../services/user"
+import userService from "../services/storage"
 
 const loginSlice = createSlice({
   name: "login",
@@ -29,7 +29,7 @@ export const userLogin = (userCredentials) => {
         password
       })
 
-      userService.setUser(user)
+      userService.saveUser(user)
       dispatch(login(user))
       dispatch(setNotification(
         { message: `Welcome ${user.name}!`, type: 'info', delay: 5 }
@@ -42,7 +42,7 @@ export const userLogin = (userCredentials) => {
 
 export const userLogout = () => {
   return async (dispatch) => {
-    userService.clearUser()
+    userService.removeUser()
     dispatch(logout(null))
   }
 }

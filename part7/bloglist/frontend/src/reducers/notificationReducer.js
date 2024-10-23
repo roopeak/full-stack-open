@@ -14,7 +14,6 @@ const { showNotification } = notificationSlice.actions
 
 export const setNotification = (message, delay) => {
   return async (dispatch) => {
-    console.log(message)
     dispatch(showNotification(message))
     setTimeout(() => {
       dispatch(showNotification(null))

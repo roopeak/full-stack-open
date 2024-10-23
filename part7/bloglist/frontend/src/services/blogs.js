@@ -14,7 +14,7 @@ const getAll = () => {
 
 const update = (id, newObject) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject, getConfit());
-  return request.then((response) => response.data);
+  return request.then(response => response.data);
 };
 
 const create = async (newObject) => {

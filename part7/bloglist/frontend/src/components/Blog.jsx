@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { removeBlog, likeBlog } from '../reducers/bloglistReducer'
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch()
@@ -17,18 +18,17 @@ const Blog = ({ blog }) => {
     const ok = window.confirm(
       `Sure you want to remove '${blog.title}' by ${blog.author}`)
     if (ok) {
-      // dispatch(removeBlog(blog))
+      dispatch(removeBlog(blog))
     }
   }
 
   const like = () => {
-    const { id } = blog
     const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
-      user: blog.user.id
+      user: blog.user
     }
-    // dispatch(likeBlog(updatedBlog))
+    dispatch(likeBlog(updatedBlog))
   }
 
   return (
