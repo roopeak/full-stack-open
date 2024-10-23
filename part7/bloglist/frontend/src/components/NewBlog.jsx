@@ -1,28 +1,29 @@
-import React, { useState } from "react";
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { useField } from "../hooks/hooks";
+import { createBlog } from '../reducers/bloglistReducer'
 
-const NewBlog = ({ doCreate }) => {
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-  const [author, setAuthor] = useState("");
+const NewBlog = () => {
+  const dispatch = useDispatch()
 
-  const handleTitleChange = (event) => {
-    setTitle(event.target.value);
-  };
-
-  const handleUrlChange = (event) => {
-    setUrl(event.target.value);
-  };
-
-  const handleAuthorChange = (event) => {
-    setAuthor(event.target.value);
-  };
+  const { reset: resetTitle, ...title } = useField("text");
+  const { reset: resetAuthor, ...author } = useField("text");
+  const { reset: resetUrl, ...url } = useField("text");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    doCreate({ title, url, author });
-    setAuthor("");
-    setTitle("");
-    setUrl("");
+
+    const blog = {
+      title: title.value,
+      author: author.value,
+      url: url.value
+    }
+
+    resetTitle()
+    resetAuthor()
+    resetUrl()
+
+    dispatch(createBlog(blog))
   };
 
   return (
@@ -31,30 +32,15 @@ const NewBlog = ({ doCreate }) => {
       <form onSubmit={handleSubmit}>
         <div>
           <label>Title:</label>
-          <input
-            type="text"
-            data-testid="title"
-            value={title}
-            onChange={handleTitleChange}
-          />
+          <input {...title}/>
         </div>
         <div>
           <label>URL:</label>
-          <input
-            type="text"
-            data-testid="url"
-            value={url}
-            onChange={handleUrlChange}
-          />
+          <input {...url}/>
         </div>
         <div>
           <label>Author:</label>
-          <input
-            type="text"
-            data-testid="author"
-            value={author}
-            onChange={handleAuthorChange}
-          />
+          <input {...author}/>
         </div>
         <button type="submit">Create</button>
       </form>

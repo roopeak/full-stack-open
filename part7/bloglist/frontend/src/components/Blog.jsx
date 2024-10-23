@@ -1,59 +1,54 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import storage from "../services/storage";
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
-const Blog = ({ blog, handleVote, handleDelete }) => {
-  const [visible, setVisible] = useState(false);
+const Blog = ({ blog }) => {
+  const dispatch = useDispatch()
+  const [visible, setVisible] = useState(false)
 
-  const nameOfUser = blog.user ? blog.user.name : "anonymous";
+  const user = useSelector(state => state.login)
 
   const style = {
-    border: "solid",
-    padding: 10,
-    borderWidth: 1,
-    marginBottom: 5,
-  };
+    marginBottom: 2,
+    padding: 5,
+    borderStyle: 'solid'
+  }
 
-  const canRemove = blog.user ? blog.user.username === storage.me() : true;
+  const remove = () => {
+    const ok = window.confirm(
+      `Sure you want to remove '${blog.title}' by ${blog.author}`)
+    if (ok) {
+      // dispatch(removeBlog(blog))
+    }
+  }
 
-  console.log(blog.user, storage.me(), canRemove);
+  const like = () => {
+    const { id } = blog
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    }
+    // dispatch(likeBlog(updatedBlog))
+  }
 
   return (
-    <div style={style} className="blog">
-      {blog.title} by {blog.author}
-      <button style={{ marginLeft: 3 }} onClick={() => setVisible(!visible)}>
-        {visible ? "hide" : "view"}
+    <div style={style} className='blog'>
+      {blog.title} {blog.author}
+      <button onClick={() => setVisible(!visible)}>
+        {visible ? 'hide' : 'show'}
       </button>
-      {visible && (
+      {visible&&
         <div>
-          <div>
-            <a href={blog.url}>{blog.url}</a>
-          </div>
-          <div>
-            likes {blog.likes}
-            <button style={{ marginLeft: 3 }} onClick={() => handleVote(blog)}>
-              like
-            </button>
-          </div>
-          <div>{nameOfUser}</div>
-          {canRemove && (
-            <button onClick={() => handleDelete(blog)}>remove</button>
+          <div> <a href={blog.url}> {blog.url}</a> </div>
+          <div>likes {blog.likes} <button onClick={like}>like</button></div>
+          <div>{blog.user && blog.user.name}</div>
+          {user.username === blog.user.username && (
+            <button onClick={remove}>delete</button>
           )}
         </div>
-      )}
+      }
     </div>
-  );
-};
+  )
+}
 
-Blog.propTypes = {
-  blog: PropTypes.shape({
-    url: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    likes: PropTypes.number.isRequired,
-    user: PropTypes.object,
-  }).isRequired,
-  handleVote: PropTypes.func.isRequired,
-  handleDelete: PropTypes.func.isRequired,
-};
-
-export default Blog;
+export default Blog
