@@ -11,7 +11,7 @@ const Login = ({ doLogin }) => {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    
+
     const credentials = {
       username: username.value,
       password: password.value

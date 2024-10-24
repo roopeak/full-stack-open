@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { removeBlog, likeBlog } from '../reducers/bloglistReducer'
 
+import Comments from './Comments'
+
 const Blog = () => {
   const dispatch = useDispatch()
   const { id } = useParams()
@@ -43,6 +45,7 @@ const Blog = () => {
         )}
         <div>added by {blog.user.name}</div>
       </div>
+      <Comments blog={blog} />
     </div>
   )
 }
