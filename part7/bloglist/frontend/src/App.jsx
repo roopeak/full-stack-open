@@ -14,13 +14,15 @@ import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import Users from "./components/Users";
+import User from './components/User'
 
 import { Routes, Route } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const user = useSelector(state => state.login)
+  const user = useSelector((state) => state.login)
+  
   const blogFormRef = createRef();
 
   useEffect(() => {
@@ -64,6 +66,7 @@ const App = () => {
         <Route path='/' element={<BlogList />} />
         <Route path='/blogs/:id' element={<Blog />} />
         <Route path='/users' element={<Users />} />
+        <Route path='/users/:id' element={<User />} />
       </Routes>
     </div>
   );
