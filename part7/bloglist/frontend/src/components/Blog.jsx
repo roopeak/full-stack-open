@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { removeBlog, likeBlog } from '../reducers/bloglistReducer'
 
-const Blog = ({ blog }) => {
+const Blog = () => {
   const dispatch = useDispatch()
-  const [visible, setVisible] = useState(false)
+  const { id } = useParams()
 
+  const blog = useSelector(
+    (state) => state.blogs ? state.blogs.find((blog) => blog.id === id) : null)
   const user = useSelector(state => state.login)
 
-  const style = {
-    marginBottom: 2,
-    padding: 5,
-    borderStyle: 'solid'
+  if (!blog) {
+    return <div>Loading blog data...</div>
   }
 
   const remove = () => {
@@ -32,21 +33,16 @@ const Blog = ({ blog }) => {
   }
 
   return (
-    <div style={style} className='blog'>
-      {blog.title} {blog.author}
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? 'hide' : 'show'}
-      </button>
-      {visible&&
-        <div>
-          <div> <a href={blog.url}> {blog.url}</a> </div>
-          <div>likes {blog.likes} <button onClick={like}>like</button></div>
-          <div>{blog.user && blog.user.name}</div>
-          {user.username === blog.user.username && (
-            <button onClick={remove}>delete</button>
-          )}
-        </div>
-      }
+    <div>
+      <h2>{blog.title}</h2>
+      <div>
+        <div> <a href={blog.url}> {blog.url}</a> </div>
+        <div>likes {blog.likes} <button onClick={like}>like</button></div>
+        {user.username === blog.user.username && (
+          <button onClick={remove}>delete</button>
+        )}
+        <div>added by {blog.user.name}</div>
+      </div>
     </div>
   )
 }
