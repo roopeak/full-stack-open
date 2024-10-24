@@ -15,6 +15,7 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import Users from "./components/Users";
 import User from './components/User'
+import Navigation from "./components/Navigation";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -37,10 +38,6 @@ const App = () => {
     }
   }, [dispatch]);
 
-  const handleLogout = () => {
-    dispatch(userLogout())
-  };
-
   if (!user) {
     return (
       <div>
@@ -53,12 +50,9 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <Navigation />
+      <h2>blog app</h2>
       <Notification />
-      <div>
-        {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </div>
       <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <NewBlog />
       </Togglable>
