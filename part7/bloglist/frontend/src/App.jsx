@@ -1,18 +1,19 @@
 import { useState, useEffect, createRef } from "react";
-
-import BlogList from './components/BlogList'
-import { initializeBlogs } from "./reducers/bloglistReducer";
-import { login, userLogout } from './reducers/loginReducer'
 import { useDispatch, useSelector } from "react-redux";
 
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+
+import { initializeBlogs } from "./reducers/bloglistReducer";
+import { login, userLogout } from './reducers/loginReducer'
+import { initializeUsers } from "./reducers/userReducer";
+
 import storage from "./services/storage";
 import Login from "./components/Login";
+import BlogList from './components/BlogList'
 import Blog from "./components/Blog";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import Users from "./components/Users";
 
 import { Routes, Route } from "react-router-dom";
 
@@ -24,6 +25,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch]);
 
   useEffect(() => {
@@ -61,6 +63,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<BlogList />} />
         <Route path='/blogs/:id' element={<Blog />} />
+        <Route path='/users' element={<Users />} />
       </Routes>
     </div>
   );
