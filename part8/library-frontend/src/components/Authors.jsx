@@ -8,7 +8,7 @@ const Authors = (props) => {
   const authorsQuery = useQuery(ALL_AUTHORS, {
     pollInterval: 2000
   })
-
+  
   const [authorBornYear, setAuthorBornYear] = useState('')
   const [selectedOption, setSelectedOption] = useState(null)
 
