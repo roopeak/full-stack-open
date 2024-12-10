@@ -1,0 +1,11 @@
+{
+  "name": "body_mass_index",
+  "version": "1.0.0",
+  "main": "bmiCalculator.ts",
+  "scripts": {
+    "ts-node": "ts-node"
+  },
+  "author": "Roope Kärkkäinen",
+  "license": "ISC",
+  "description": ""
+}
