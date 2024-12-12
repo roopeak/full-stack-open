@@ -1,5 +1,7 @@
+import { isNotNumber } from "./utils";
+
 interface Result {
-	periodLength: number;
+  periodLength: number;
   trainingDays: number;
   success: boolean;
   rating: number;
@@ -8,13 +10,33 @@ interface Result {
   average: number;
 }
 
+interface Values {
+	dailyHours: number[];
+	target: number;
+}
+
+const parseArguments = (args: string[]): Values => {
+	const paramData = args.splice(2);
+	const splicedData: number[] = [];
+
+	for (const data of paramData) {
+		if (isNotNumber(data)) throw new Error('Provided values were not numbers!');
+		splicedData.push(Number(data));
+	}
+
+	return {
+		dailyHours: splicedData.slice(0, -1),
+		target: splicedData[0],
+	}
+}
+
 const calculateExercises = (
-	exerciseHours: Array<number>,
+	dailyHours: Array<number>,
 	target: number
-) => {
-	const periodLength = exerciseHours.length;
-	const trainingDays = exerciseHours.filter(hours => hours > 0).length;
-	const totalHours = exerciseHours.reduce((acc, curr) => acc + curr, 0);
+): Result => {
+	const periodLength = dailyHours.length;
+	const trainingDays = dailyHours.filter(hours => hours > 0).length;
+	const totalHours = dailyHours.reduce((acc, curr) => acc + curr, 0);
 	const average = totalHours / periodLength;
 	const success = average >= target
 
@@ -43,4 +65,11 @@ const calculateExercises = (
 	}
 }
 
-console.log(calculateExercises([3,0,2,4.5,0,3,1], 2));
+try {
+	const parameters = parseArguments(process.argv);
+	console.log(calculateExercises(parameters.dailyHours, parameters.target));
+} catch (error: unknown) {
+	if (error instanceof Error) {
+		console.log('Error:', error.message);
+	}
+}
