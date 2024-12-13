@@ -1,3 +1,5 @@
+require.main === module
+
 interface Values {
   height: number,
   weight: number
@@ -20,19 +22,25 @@ const parseArguments = (args: string[]): Values => {
 const calculateBmi = (height: number, weight: number) => {
   const bmi = weight / ((height / 100) * (height / 100));
   if (bmi <= 18.4) {
-    console.log('Underweight');
+    return 'Underweight';
   } else if (18.5 <= bmi && bmi <= 24.9) {
-    console.log('Normal range')
+    return 'Normal range';
   } else if (25.0 <= bmi) {
-    console.log('Overweight')
+    return 'Overweight';
   }
+
+  return;
 }
 
 try {
-  const { height, weight } = parseArguments(process.argv);
-  console.log(calculateBmi(height, weight));
+  if (require.main === module) {
+    const { height, weight } = parseArguments(process.argv);
+    console.log(calculateBmi(height, weight));
+  }
 } catch (error: unknown) {
   if (error instanceof Error) {
     console.log('Error:', error.message);
   }
 }
+
+export default calculateBmi;
