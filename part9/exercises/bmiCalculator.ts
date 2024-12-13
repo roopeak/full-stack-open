@@ -1,5 +1,3 @@
-require.main === module
-
 interface Values {
   height: number,
   weight: number
@@ -13,11 +11,11 @@ const parseArguments = (args: string[]): Values => {
     return {
       height: Number(args[2]),
       weight: Number(args[3])
-    }
+    };
   } else {
-    throw new Error('Provided values were not numbers!')
+    throw new Error('Provided values were not numbers!');
   }
-} 
+};
 
 const calculateBmi = (height: number, weight: number) => {
   const bmi = weight / ((height / 100) * (height / 100));
@@ -30,7 +28,7 @@ const calculateBmi = (height: number, weight: number) => {
   }
 
   return;
-}
+};
 
 try {
   if (require.main === module) {

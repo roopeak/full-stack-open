@@ -27,8 +27,8 @@ const parseArguments = (args: string[]): Values => {
 	return {
 		dailyHours: splicedData.slice(0, -1),
 		target: splicedData[0],
-	}
-}
+	};
+};
 
 const calculateExercises = (
 	dailyHours: Array<number>,
@@ -38,7 +38,7 @@ const calculateExercises = (
 	const trainingDays = dailyHours.filter(hours => hours > 0).length;
 	const totalHours = dailyHours.reduce((acc, curr) => acc + curr, 0);
 	const average = totalHours / periodLength;
-	const success = average >= target
+	const success = average >= target;
 
 	let rating;
 	let ratingDescription;
@@ -62,8 +62,8 @@ const calculateExercises = (
 		ratingDescription: ratingDescription,
 		target: target,
 		average: average
-	}
-}
+	};
+};
 
 try {
 	const parameters = parseArguments(process.argv);

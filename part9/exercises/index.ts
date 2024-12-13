@@ -6,7 +6,7 @@ const app = express();
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
-})
+});
 
 app.get('/bmi', (req, res) => {
 	const height = req.query.height;
@@ -24,7 +24,7 @@ app.get('/bmi', (req, res) => {
 		});
 	}
 
-})
+});
 
 const PORT = 3003;
 
