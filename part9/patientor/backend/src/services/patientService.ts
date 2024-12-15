@@ -1,6 +1,6 @@
+import { v1 as uuid } from 'uuid';
 import patientData from '../../data/patients';
-
-import { PatientEntry } from '../types';
+import { NewPatient, PatientEntry } from '../types';
 
 const patients: PatientEntry[] = patientData;
 
@@ -14,6 +14,14 @@ const getEntries = (): PatientEntry[] => {
   }));
 };
 
+const addPatient = ( entry: NewPatient ): PatientEntry => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+  const newPatientEntry = { id: uuid(), ...entry };
+  patients.push(newPatientEntry);
+  return newPatientEntry;
+};
+
 export default {
-  getEntries
+  getEntries,
+  addPatient
 };
